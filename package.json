@@ -1,0 +1,10 @@
+{
+  "name": "jobconnect",
+  "version": "1.0.0",
+  "description": "JobConnect - connecting employers and job seekers",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "ISC"
+}

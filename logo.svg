@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="JobConnect logo">
+  <rect x="4" y="4" width="92" height="92" rx="20" fill="#1a1812" stroke="#d4af37" stroke-width="4"/>
+  <path d="M29 27h42v12H43v11h24v12H43v11H29z" fill="#f5d77a"/>
+  <circle cx="72" cy="72" r="8" fill="#d4af37"/>
+</svg>

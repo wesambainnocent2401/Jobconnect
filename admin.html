@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobConnect | Admin Dashboard</title>
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .admin-container {
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .admin-heading {
+            margin-bottom: 25px;
+            color: var(--gold);
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .stat-card h3 {
+            color: var(--muted);
+            font-size: 15px;
+   scripholder    .stat-card strong {
+            display: block;
+            color: var(--gold);
+            font-size: 32px;
+            margin-top: 10px;
+        }
+
+        .admin-section {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+        }
+
+        .admin-section h2 {
+            color: var(--gold);
+            margin-bottom: 18px;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 13px;
+            text-align: left;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .admin-table th {
+            color: var(--gold);
+        }
+
+        .admin-table td {
+            color: var(--text);
+        }
+
+        .admin-table button {
+            margin: 3px;
+        }
+
+        .admin-search {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .admin-warning {
+            padding: 16px;
+            border: 1px solid var(--gold);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: var(--gold-light);
+        }
+
+        .danger-btn {
+            background: #8b2525 !important;
+            color: white !important;
+        }
+
+        @media(max-width: 600px) {
+            .admin-container {
+                padding: 12px;
+            }
+
+            .admin-section {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="auth-bar" id="authBar"></nav>
+
+<header>
+    <h1>JobConnect Admin</h1>
+    <p>Platform Management Centre</p>
+</header>
+
+<main class="admin-container">
+
+    <div class="admin-heading">
+        <h2>Welcome to the Admin Dashboard</h2>
+        <p>Monitor and manage your JobConnect platform.</p>
+    </div>
+
+    <div id="adminNotice" class="admin-warning">
+        Loading administration dashboard...
+    </div>
+
+    <section id="adminContent" hidden>
+
+        <div class="admin-stats">
+
+            <div class="stat-card">
+                <h3>Total Users</h3>
+                <strong id="totalUsers">0</strong>
+            </div>
+
+            <div class="stat-card">
+                <h3>Jobseekers</h3>
+                <strong id="totalJobseekers">0</strong>
+            </div>
+
+            <div class="stat-card">
+                <h3>Employers</h3>
+                <strong id="totalEmployers">0</strong>
+            </div>
+
+            <div class="stat-card">
+                <h3>Total Jobs</h3>
+                <strong id="totalJobs">0</strong>
+            </div>
+
+            <div class="stat-card">
+                <h3>Active Jobs</h3>
+                <strong id="activeJobs">0</strong>
+            </div>
+
+            <div class="stat-card">
+                <h3>Applications</h3>
+                <strong id="totalApplications">0</strong>
+            </div>
+
+        </div>
+
+        <section class="admin-section">
+
+            <h2>Platform Users</h2>
+
+            <input
+                type="search"
+                id="userSearch"
+                class="admin-search"
+                placeholder="Search users by name or email..."
+            >
+
+            <table class="admin-table">
+
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Account Type</th>
+                        <th>Date Joined</th>
+                    </tr>
+                </thead>
+
+                <tbody id="usersTable"></tbody>
+
+            </table>
+
+        </section>
+
+        <section class="admin-section">
+
+            <h2>Job Listings Management</h2>
+
+            <input
+                type="search"
+                id="jobSearchAdmin"
+                class="admin-search"
+                placeholder="Search jobs by title or company..."
+            >
+
+            <table class="admin-table">
+
+                <thead>
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Company</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="jobsTable"></tbody>
+
+            </table>
+
+        </section>
+
+        <section class="admin-section">
+
+            <h2>Application Statistics</h2>
+
+            <p id="applicationStats"></p>
+
+            <p id="shortlistedStats"></p>
+
+            <p id="interviewStats"></p>
+
+        </section>
+
+        <button onclick="location.href='index.html'">
+            Return to Homepage
+        </button>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 JobConnect. Administration Centre.</p>
+</footer>
+<script type="module" src="script.js"></script>
+
+</body>
+</html>

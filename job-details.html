@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Job Details - JobConnect</title>
+
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="auth-bar" id="authBar"></nav>
+
+<header>
+    <img src="logo.svg" class="logo" alt="JobConnect logo">
+    <h1>JobConnect</h1>
+    <p>Job Details</p>
+</header>
+
+<main>
+
+<section class="profile-form profile-wide" id="jobDetails">
+
+    <!-- JOB INFORMATION -->
+    <div class="form-section">
+        <h2 id="jobTitle">Loading job...</h2>
+
+        <div id="jobInformation"></div>
+    </div>
+
+    <!-- APPLICATION -->
+    <div class="form-section" id="applicationSection">
+
+        <h2>Apply for this Job</h2>
+
+        <div id="loginNotice" hidden></div>
+
+        <form id="applicationForm">
+
+            <div class="form-grid">
+
+                <div class="field full">
+                    <label for="applicantName">Full Name</label>
+                    <input type="text" id="applicantName" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="field">
+                    <label for="applicantPhone">Phone Number</label>
+                    <input type="tel" id="applicantPhone" placeholder="Enter your phone number" required>
+                </div>
+
+                <div class="field">
+                    <label for="applicantEmail">Email Address</label>
+                    <input type="email" id="applicantEmail" placeholder="you@example.com" required>
+                </div>
+
+                <div class="field">
+                    <label for="applicantEducation">Highest Qualification</label>
+                    <select id="applicantEducation" required>
+                        <option value="">Select qualification</option>
+                        <option value="Secondary School">Secondary School</option>
+                        <option value="Certificate">Certificate</option>
+                        <option value="Diploma">Diploma</option>
+                        <option value="Degree">Degree</option>
+                        <option value="Masters">Masters</option>
+                        <option value="PhD">PhD</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="applicantExperience">Years of Experience</label>
+                    <input type="number" id="applicantExperience" min="0" placeholder="e.g. 3" required>
+                </div>
+
+                <div class="field full">
+                    <label for="applicantSkills">Skills</label>
+                    <textarea id="applicantSkills" placeholder="List your relevant skills" required></textarea>
+                    <small class="hint">Separate each skill with a comma.</small>
+                </div>
+
+                <div class="field full">
+                    <label for="portfolio">Portfolio Link</label>
+                    <input type="url" id="portfolio" placeholder="https://...">
+                    <small class="hint">Optional.</small>
+                </div>
+
+                <div class="field full">
+                    <label for="coverMessage">Why are you suitable for this job?</label>
+                    <textarea id="coverMessage" placeholder="Tell the employer briefly why you are suitable..." required></textarea>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <button type="submit">Submit Application</button>
+                <button type="button" class="btn-outline" onclick="location.href='index.html#jobs'">Back to Jobs</button>
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+</main>
+
+<footer>
+    <p>© 2026 JobConnect</p>
+</footer>
+
+<script type="module" src="script.js"></script>
+
+</body>
+</html>

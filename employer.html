@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Post a Job - JobConnect</title>
+
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="auth-bar" id="authBar"></nav>
+
+<header>
+    <img src="logo.svg" class="logo" alt="JobConnect logo">
+    <h1>JobConnect</h1>
+    <p>Employer Job Posting</p>
+</header>
+
+<main>
+
+<section class="profile-form profile-wide">
+
+    <p class="profile-intro">
+        Tell us about the job. Qualified applicants will be matched to it automatically.
+    </p>
+
+    <form id="jobForm">
+
+        <!-- COMPANY -->
+        <div class="form-section">
+            <h2>Company Information</h2>
+
+            <div class="form-grid">
+                <div class="field">
+                    <label for="companyName">Company Name</label>
+                    <input type="text" id="companyName" placeholder="Enter company name" required>
+                </div>
+
+                <div class="field">
+                    <label for="companyEmail">Company Email</label>
+                    <input type="email" id="companyEmail" placeholder="company@example.com" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- JOB -->
+        <div class="form-section">
+            <h2>Job Information</h2>
+
+            <div class="form-grid">
+                <div class="field full">
+                    <label for="jobTitle">Job Title</label>
+                    <input type="text" id="jobTitle" placeholder="e.g. Electrical Technician" required>
+                </div>
+
+                <div class="field">
+                    <label for="jobLocation">Location</label>
+                    <input type="text" id="jobLocation" placeholder="e.g. Nairobi" required>
+                </div>
+
+                <div class="field">
+                    <label for="employmentType">Employment Type</label>
+                    <select id="employmentType">
+                        <option>Full Time</option>
+                        <option>Part Time</option>
+                        <option>Contract</option>
+                        <option>Temporary</option>
+                        <option>Internship</option>
+                    </select>
+                </div>
+
+                <div class="field full">
+                    <label for="salary">Salary</label>
+                    <input type="text" id="salary" placeholder="e.g. KSh 40,000 - 60,000">
+                    <small class="hint">Optional. Jobs with a stated salary attract more applicants.</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- REQUIREMENTS -->
+        <div class="form-section">
+            <h2>Candidate Requirements</h2>
+
+            <div class="form-grid">
+                <div class="field">
+                    <label for="education">Minimum Education</label>
+                    <select id="education">
+                        <option>Any</option>
+                        <option>Secondary School</option>
+                        <option>Certificate</option>
+                        <option>Diploma</option>
+                        <option>Degree</option>
+                        <option>Masters</option>
+                        <option>PhD</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="experience">Minimum Years of Experience</label>
+                    <input type="number" id="experience" min="0" placeholder="e.g. 2">
+                </div>
+
+                <div class="field full">
+                    <label for="skills">Required Skills</label>
+                    <textarea
+                        id="skills"
+                        placeholder="Example: Electrical installation, wiring, maintenance"
+                    ></textarea>
+                    <small class="hint">Separate each skill with a comma. Applicants are scored against these skills.</small>
+                </div>
+
+                <div class="field full">
+                    <label for="certifications">Required Certifications</label>
+                    <textarea
+                        id="certifications"
+                        placeholder="List any required certificates"
+                    ></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="form-section">
+            <h2>Description and Deadline</h2>
+
+            <div class="form-grid">
+                <div class="field full">
+                    <label for="description">Job Description</label>
+                    <textarea
+                        id="description"
+                        placeholder="Describe the job and responsibilities..."
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="field full">
+                    <label for="deadline">Application Deadline</label>
+                    <input type="date" id="deadline">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit">Publish Job</button>
+            <button type="button" class="btn-outline" onclick="location.href='index.html'">Back to Home</button>
+        </div>
+
+    </form>
+
+</section>
+
+</main>
+
+<footer>
+    <p>© 2026 JobConnect</p>
+</footer>
+
+<script type="module" src="script.js"></script>
+
+</body>
+</html>

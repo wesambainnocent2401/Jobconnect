@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>JobConnect</title>
+
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <nav class="auth-bar" id="authBar"></nav>
+
+    <section class="cover">
+        <div class="cover-frame">
+            <img src="logo.svg" class="logo logo-large" alt="JobConnect logo">
+            <h1>JobConnect</h1>
+            <p>Connect. Apply. Get Hired.</p>
+            <div class="buttons">
+                <button onclick="showJobs()">Find Jobs</button>
+                <button class="btn-outline" onclick="goPostJob()">Post a Job</button>
+            </div>
+        </div>
+    </section>
+
+    <header>
+        <h1>JobConnect</h1>
+        <p>Connect. Apply. Get Hired.</p>
+    </header>
+
+    <main>
+
+        <section class="hero">
+            <h2>Find the right job. Find the right employee.</h2>
+
+            <p>
+                Employers find qualified workers.
+                Job seekers find opportunities that match their skills.
+            </p>
+
+            <div class="buttons">
+                <button onclick="showJobs()">Find Jobs</button>
+                <button onclick="goJobSeekerProfile()">Create Job Seeker Profile</button>
+                <button onclick="goPostJob()">Post a Job</button>
+            </div>
+        </section>
+
+        <section id="jobs" class="jobs-section">
+            <h2>Available Jobs</h2>
+
+            <div class="search-bar">
+                <input
+                    type="search"
+                    id="jobSearch"
+                    placeholder="Search job, company or place"
+                    aria-label="Search jobs"
+                >
+
+                <select id="typeFilter" aria-label="Filter by employment type">
+                    <option value="">All types</option>
+                    <option>Full Time</option>
+                    <option>Part Time</option>
+                    <option>Contract</option>
+                    <option>Temporary</option>
+                    <option>Internship</option>
+                </select>
+
+                <button type="button" class="btn-outline" id="clearFilters">Clear</button>
+            </div>
+
+            <p id="resultsCount" class="results-count"></p>
+
+            <div id="jobsList"></div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>© 2026 JobConnect</p>
+    </footer>
+
+    <script type="module" src="script.js"></script>
+
+</body>
+</html>

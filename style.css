@@ -1,0 +1,892 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&display=swap');
+
+:root {
+    --gold: #d4af37;
+    --gold-light: #f5d77a;
+    --gold-deep: #a8861f;
+    --black: #0e0d0a;
+    --surface: #1a1812;
+    --surface-2: #231f15;
+    --text: #f3eee0;
+    --muted: #b9b09a;
+    --line: rgba(212, 175, 55, 0.35);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', Arial, sans-serif;
+    background: var(--black);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+}
+
+/* ---------- COVER PAGE ---------- */
+.cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 24px;
+    background:
+        radial-gradient(circle at 50% 0%, #3a2f0c 0%, transparent 60%),
+        radial-gradient(circle at 50% 100%, #2a2208 0%, transparent 55%),
+        var(--black);
+    border-bottom: 2px solid var(--gold);
+}
+
+.cover-frame {
+    max-width: 640px;
+    width: 100%;
+    padding: 56px 28px;
+    border: 1px solid var(--line);
+    outline: 1px solid var(--line);
+    outline-offset: 8px;
+    border-radius: 4px;
+}
+
+.cover h1 {
+    font-size: clamp(2.4rem, 9vw, 4.2rem);
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold) 55%, var(--gold-deep));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--gold);
+    margin-bottom: 18px;
+}
+
+.cover p {
+    max-width: 440px;
+    margin: 0 auto;
+    color: var(--muted);
+    font-size: 1.05rem;
+}
+
+.cover .buttons {
+    margin-top: 34px;
+}
+
+/* ---------- HEADER ---------- */
+header {
+    background: var(--surface);
+    color: var(--gold);
+    text-align: center;
+    padding: 25px 15px;
+    border-bottom: 1px solid var(--gold);
+}
+
+header h1 {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+/* ---------- HERO ---------- */
+.hero {
+    text-align: center;
+    padding: 50px 20px;
+    background: var(--surface-2);
+}
+
+.hero h2 {
+    font-size: 28px;
+    margin-bottom: 15px;
+    color: var(--gold-light);
+}
+
+.hero p {
+    max-width: 600px;
+    margin: auto;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+.buttons {
+    margin-top: 25px;
+}
+
+/* ---------- BUTTONS ---------- */
+button {
+    border: none;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    color: #17130a;
+    padding: 12px 24px;
+    margin: 5px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--gold-light);
+    outline-offset: 2px;
+}
+
+/* ---------- JOBS ---------- */
+.jobs-section {
+    padding: 30px 20px;
+    max-width: 800px;
+    margin: auto;
+}
+
+.jobs-section h2 {
+    margin-bottom: 20px;
+    color: var(--gold);
+}
+
+.job-card {
+    background: var(--surface);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--gold);
+    box-shadow: 0 0 18px rgba(212, 175, 55, 0.12);
+}
+
+.job-card h3 {
+    color: var(--gold);
+    margin-bottom: 15px;
+}
+
+.job-card p {
+    margin: 8px 0;
+    color: var(--text);
+}
+
+/* ---------- FOOTER ---------- */
+footer {
+    text-align: center;
+    padding: 25px;
+    background: var(--surface);
+    color: var(--muted);
+    margin-top: 30px;
+    border-top: 1px solid var(--gold);
+}
+
+/* ---------- FORMS ---------- */
+.profile-form {
+    max-width: 700px;
+    margin: 30px auto;
+    background: var(--surface);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    box-shadow: 0 0 18px rgba(212, 175, 55, 0.12);
+}
+
+.profile-form h2 {
+    color: var(--gold);
+    margin: 25px 0 15px;
+}
+
+.profile-form h2:first-child {
+    margin-top: 0;
+}
+
+.profile-form label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: var(--gold-light);
+}
+
+.profile-form input,
+.profile-form select,
+.profile-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 16px;
+    background: var(--black);
+    color: var(--text);
+}
+
+.profile-form input:focus,
+.profile-form select:focus,
+.profile-form textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+}
+
+.profile-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.profile-form button {
+    margin-top: 25px;
+    width: 100%;
+}
+
+.profile-form hr {
+    margin: 30px 0;
+    border: none;
+    border-top: 1px solid var(--line);
+}
+
+/* ---------- JOB DETAILS ---------- */
+#jobInformation {
+    line-height: 1.7;
+}
+
+#jobInformation h3 {
+    color: var(--gold);
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+#jobInformation hr {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid var(--line);
+}
+
+/* ---------- APPLICATIONS ---------- */
+#applicationsList {
+    margin-top: 20px;
+}
+
+#applicationsList a {
+    color: var(--gold-light);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+#applicationsList a:hover {
+    color: var(--gold);
+    text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    button {
+        transition: none;
+    }
+    button:hover {
+        transform: none;
+    }
+}
+
+
+/* ---------- BUTTON LAYOUT & EXTRAS ---------- */
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.buttons button {
+    margin: 0;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+button.btn-outline {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    box-shadow: none;
+}
+
+button.btn-outline:hover {
+    background: rgba(212, 175, 55, 0.12);
+    box-shadow: none;
+}
+
+button.btn-small {
+    padding: 8px 18px;
+    font-size: 14px;
+    margin: 0;
+}
+
+.auth-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+}
+
+.auth-name {
+    color: var(--gold-light);
+    font-size: 14px;
+    margin-right: auto;
+}
+
+
+/* ---------- JOB SEEKER PROFILE LAYOUT ---------- */
+.profile-wide {
+    max-width: 760px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0 16px;
+}
+
+.profile-intro {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 8px;
+}
+
+.form-section {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--gold);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 0 18px rgba(212, 175, 55, 0.1);
+}
+
+.form-section h2 {
+    margin: 0 0 6px;
+    padding-bottom: 12px;
+    font-size: 22px;
+    border-bottom: 1px solid var(--line);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 18px;
+}
+
+.field.full {
+    grid-column: 1 / -1;
+}
+
+.hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.form-actions {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-actions button {
+    margin: 0;
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+[hidden] {
+    display: none !important;
+}
+
+#loginNotice {
+    text-align: center;
+    padding: 10px 0;
+}
+
+#loginNotice p {
+    margin-bottom: 14px;
+    color: var(--muted);
+}
+
+
+/* ---------- EMPLOYER DASHBOARD ---------- */
+.dashboard-title {
+    text-align: center;
+    margin-top: 10px;
+}
+
+
+/* ---------- ACCOUNT PAGES (REGISTER / LOGIN) ---------- */
+.check-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.check-row input {
+    width: auto;
+    accent-color: var(--gold);
+}
+
+.check-row label {
+    display: inline;
+    margin: 0;
+    font-weight: 400;
+    color: var(--muted);
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 22px;
+    color: var(--muted);
+}
+
+.form-footer a {
+    color: var(--gold-light);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.form-footer a:hover {
+    color: var(--gold);
+    text-decoration: underline;
+}
+
+.auth-page {
+    max-width: 560px;
+}
+
+
+/* =====================================================
+   SHINY GOLD FINISH + LOGO
+   ===================================================== */
+:root {
+    --metal: linear-gradient(110deg, #8a6a14 0%, #f5d77a 22%, #fff3c4 38%, #d4af37 52%, #a8861f 70%, #f5d77a 88%, #b8901f 100%);
+}
+
+body {
+    background:
+        radial-gradient(ellipse at 50% 0%, #2d240a 0%, rgba(14, 13, 10, 0) 60%),
+        var(--black);
+    background-repeat: no-repeat;
+    min-height: 100vh;
+}
+
+/* ---------- LOGO ---------- */
+.logo {
+    display: block;
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 10px;
+    filter: drop-shadow(0 0 14px rgba(212, 175, 55, 0.5));
+}
+
+.logo-large {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 18px;
+    filter: drop-shadow(0 0 26px rgba(245, 215, 122, 0.55));
+}
+
+/* ---------- SHINY TITLES (one shine sweep on page load) ---------- */
+header h1,
+.cover h1 {
+    background: var(--metal);
+    background-size: 220% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--gold);
+    letter-spacing: 1px;
+    animation: shine 2.6s ease-out 0.3s 1 forwards;
+}
+
+@keyframes shine {
+    from { background-position: 100% 0; }
+    to   { background-position: 0% 0; }
+}
+
+header {
+    background: linear-gradient(180deg, #221c0b 0%, #14110a 100%);
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(90deg, transparent, #d4af37, #fff3c4, #d4af37, transparent) 1;
+}
+
+header p {
+    color: var(--muted);
+    letter-spacing: 0.5px;
+}
+
+/* ---------- SHINY BUTTONS ---------- */
+button {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #a8861f 0%, #f5d77a 28%, #fff3c4 48%, #d4af37 70%, #a8861f 100%);
+    border: 1px solid rgba(255, 243, 196, 0.55);
+    box-shadow:
+        0 4px 14px rgba(212, 175, 55, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+button:not(.btn-outline)::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -80%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
+    pointer-events: none;
+}
+
+button:not(.btn-outline):hover::after,
+button:not(.btn-outline):focus-visible::after {
+    left: 130%;
+}
+
+button.btn-outline {
+    background: transparent;
+    border: 1px solid var(--gold);
+    text-shadow: none;
+}
+
+/* ---------- RICHER CARDS ---------- */
+.form-section,
+.job-card,
+.profile-form {
+    background: linear-gradient(180deg, #211d11 0%, #1a1812 100%);
+}
+
+.profile-wide {
+    background: transparent;
+}
+
+.form-section,
+.job-card {
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(212, 175, 55, 0.18),
+        inset 0 1px 0 rgba(245, 215, 122, 0.25);
+}
+
+.form-section h2,
+.job-card h3,
+.jobs-section h2 {
+    background: var(--metal);
+    background-size: 220% 100%;
+    background-position: 0% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--gold);
+}
+
+/* ---------- INPUTS ---------- */
+.profile-form input,
+.profile-form select,
+.profile-form textarea {
+    background: #0b0a07;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.profile-form input:focus,
+.profile-form select:focus,
+.profile-form textarea:focus {
+    border-color: var(--gold-light);
+    box-shadow:
+        inset 0 2px 6px rgba(0, 0, 0, 0.6),
+        0 0 0 3px rgba(245, 215, 122, 0.25);
+}
+
+/* ---------- FOOTER ---------- */
+footer {
+    border-top: 2px solid transparent;
+    border-image: linear-gradient(90deg, transparent, #d4af37, #fff3c4, #d4af37, transparent) 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    header h1,
+    .cover h1 {
+        animation: none;
+        background-position: 0% 0;
+    }
+
+    button:not(.btn-outline)::after {
+        transition: none;
+    }
+}
+
+
+/* =====================================================
+   BACKGROUND: BLACK MARBLE + WARM GOLD BOKEH
+   (colours taken from the reference image)
+   ===================================================== */
+:root {
+    --black: #080808;
+    --surface: #131216;
+    --surface-2: #18171c;
+}
+
+body {
+    background: #080808;
+    position: relative;
+}
+
+/* fixed layer behind everything: bokeh lights, marble veins, dark edges */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        /* warm out-of-focus lights */
+        radial-gradient(circle at 7% 9%,  rgba(214, 160, 80, 0.62) 0, rgba(214, 160, 80, 0.20) 16px, rgba(214, 160, 80, 0) 46px),
+        radial-gradient(circle at 93% 12%, rgba(200, 145, 70, 0.55) 0, rgba(200, 145, 70, 0.16) 14px, rgba(200, 145, 70, 0) 40px),
+        radial-gradient(circle at 85% 23%, rgba(200, 150, 75, 0.34) 0, rgba(200, 150, 75, 0.12) 12px, rgba(200, 150, 75, 0) 32px),
+        radial-gradient(circle at 95% 47%, rgba(190, 135, 65, 0.30) 0, rgba(190, 135, 65, 0.10) 18px, rgba(190, 135, 65, 0) 50px),
+        radial-gradient(circle at 4% 58%,  rgba(190, 135, 65, 0.28) 0, rgba(190, 135, 65, 0.10) 14px, rgba(190, 135, 65, 0) 40px),
+        radial-gradient(circle at 12% 84%, rgba(210, 155, 75, 0.30) 0, rgba(210, 155, 75, 0.10) 12px, rgba(210, 155, 75, 0) 34px),
+        radial-gradient(circle at 90% 82%, rgba(205, 150, 70, 0.46) 0, rgba(205, 150, 70, 0.12) 16px, rgba(205, 150, 70, 0) 44px),
+        /* dark vignette so the middle stays calm and the edges fall into black */
+        radial-gradient(ellipse at 50% 45%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.60) 100%);
+    background-repeat: no-repeat;
+}
+
+/* very faint marble veins, as soft as in the reference */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cfilter id='m' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0035 0.007' numOctaves='5' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.62  0 0 0 0 0.62  0 0 0 0 0.68  1 0 0 0 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 0 0 0 0 0 0 0 0 0.9 0 0 0 0 0 0 0 0 0 0'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E");
+    background-size: 900px 900px;
+    opacity: 0.11;
+    filter: blur(1.4px);
+}
+
+/* let the marble show through the main sections */
+.cover {
+    background: transparent;
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(90deg, transparent, #d4af37, #fff3c4, #d4af37, transparent) 1;
+}
+
+header {
+    background: linear-gradient(180deg, rgba(20, 19, 23, 0.82), rgba(8, 8, 8, 0.82));
+}
+
+.hero {
+    background: rgba(19, 18, 22, 0.80);
+}
+
+.auth-bar,
+footer {
+    background: rgba(12, 11, 14, 0.88);
+}
+
+/* matte black cards like the card in the reference */
+.form-section,
+.job-card,
+.profile-form {
+    background: linear-gradient(180deg, #18171c 0%, #121115 100%);
+}
+
+.profile-wide {
+    background: transparent;
+}
+
+.cover-frame {
+    background: rgba(15, 14, 18, 0.55);
+}
+
+
+/* ---------- JOB SEARCH + FILTER ---------- */
+.search-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.search-bar input,
+.search-bar select {
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    font-family: inherit;
+    font-size: 16px;
+    background: #0b0a07;
+    color: var(--text);
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.search-bar input {
+    flex: 1 1 100%;
+}
+
+.search-bar select {
+    flex: 1 1 140px;
+}
+
+.search-bar input:focus,
+.search-bar select:focus {
+    border-color: var(--gold-light);
+    box-shadow:
+        inset 0 2px 6px rgba(0, 0, 0, 0.6),
+        0 0 0 3px rgba(245, 215, 122, 0.25);
+}
+
+.search-bar button {
+    margin: 0;
+    padding: 10px 22px;
+}
+
+.results-count {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+
+/* ---------- MY APPLICATIONS: STATUS BADGES ---------- */
+.auth-bar {
+    flex-wrap: wrap;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 30px;
+    border: 1px solid var(--gold);
+    color: var(--gold-light);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.status-shortlisted {
+    background: linear-gradient(135deg, #a8861f, #f5d77a 45%, #d4af37);
+    color: #17130a;
+    border-color: rgba(255, 243, 196, 0.6);
+}
+
+
+/* ---------- MY JOBS ---------- */
+.status-closed {
+    border-color: #6f6a5c;
+    color: #a39c88;
+}
+
+.card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.card-actions button {
+    margin: 0;
+    width: 100%;
+}
+
+
+/* ---------- TOP BAR: keep all buttons on one line on phones ---------- */
+.auth-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+    .auth-bar {
+        gap: 6px;
+        padding: 10px 12px;
+    }
+
+    .auth-bar button.btn-small {
+        padding: 8px 13px;
+        font-size: 13px;
+    }
+}/* JOBCONNECT PROFESSIONAL ADDITIONS */
+
+.notice-box {
+    margin: 18px auto;
+    max-width: 760px;
+    padding: 14px 18px;
+    border: 1px solid var(--gold);
+    border-left: 4px solid var(--gold-light);
+    border-radius: 10px;
+    background: rgba(212,175,55,.10);
+    color: var(--text);
+}
+
+.job-card p {
+    overflow-wrap: anywhere;
+}
+
+.job-card a {
+    color: var(--gold-light);
+}
+
+.status-badge {
+    margin: 4px 0;
+}
+
+.card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.card-actions button {
+    width: auto;
+    flex: 1 1 150px;
+}
+
+input[type="file"] {
+    padding: 9px;
+}
+
+@media (max-width: 600px) {
+    .cover-frame {
+        padding: 38px 18px;
+    }
+
+    .profile-form {
+        padding: 16px;
+    }
+
+    .job-card {
+        padding: 16px;
+    }
+}

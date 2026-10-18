@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login - JobConnect</title>
+
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="auth-bar" id="authBar"></nav>
+
+<header>
+    <img src="logo.svg" class="logo" alt="JobConnect logo">
+    <h1>JobConnect</h1>
+    <p>Welcome Back</p>
+</header>
+
+<main>
+
+<section class="profile-form profile-wide auth-page">
+
+    <p class="profile-intro">
+        Log in to apply for jobs, or to post jobs and review applicants.
+    </p>
+
+    <form id="loginForm">
+
+        <div class="form-section">
+            <h2>Log in</h2>
+
+            <div class="form-grid">
+
+                <div class="field full">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="you@example.com" required>
+                </div>
+
+                <div class="field full">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" class="password-field" placeholder="Enter your password" required>
+                </div>
+
+                <div class="field full check-row">
+                    <input type="checkbox" id="showPassword">
+                    <label for="showPassword">Show password</label>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit">Log in</button>
+            <button type="button" class="btn-outline" onclick="location.href='index.html'">Back to Home</button>
+        </div>
+
+    </form>
+
+    <p class="form-footer">
+        Don't have an account?
+        <a href="register.html">Create account</a>
+    </p>
+
+</section>
+
+</main>
+
+<footer>
+    <p>© 2026 JobConnect</p>
+</footer>
+
+<script type="module" src="script.js"></script>
+
+</body>
+</html>
