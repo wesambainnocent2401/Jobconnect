@@ -515,12 +515,10 @@ async function handleLogin(event) {
             window.location.href = "index.html";
         }
 
-    } catch (error) {
-        console.error("Login error:", error);
-
-        showMessage(
-            error.message || "Login failed. Please check your email and password."
-        );
+    } } catch (error) {
+    console.error("Login error:", error);
+    alert("Login error: " + error.message);
+}
 
     } finally {
         if (submitButton) {
