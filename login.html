@@ -74,6 +74,15 @@
 </footer>
 
 <script type="module" src="script.js"></script>
+    <script>
+    document.getElementById("loginButton").addEventListener("click", function () {
+        const form = document.getElementById("loginForm");
+
+        if (form) {
+            form.requestSubmit();
+        }
+    });
+    </script>
 
 </body>
 </html>
