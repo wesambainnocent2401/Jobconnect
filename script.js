@@ -316,6 +316,7 @@ async function handleRegistration(event) {
 // ==========================================
 
 async function handleLogin(event) {
+    window.handleLogin = handleLogin;
     event.preventDefault();
 
     const email = document.getElementById("loginEmail")?.value
