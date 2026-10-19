@@ -149,6 +149,145 @@ function getApplications() {
 
 
 // ==========================================
+// 2B. PASSPORT PHOTOS
+// ==========================================
+
+const PHOTO_WIDTH = 350;
+const PHOTO_HEIGHT = 450;
+
+// The photo the applicant has chosen (already resized), ready to be saved
+let applicantPhotoData = "";
+
+// Turn any picture into a passport-shaped JPEG (7:9) that is small enough to store
+function makePassportPhoto(file) {
+    return new Promise((resolve, reject) => {
+
+        if (!file || !/^image\//.test(file.type)) {
+            reject(new Error("Please choose a picture (JPG or PNG)."));
+            return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+            reject(new Error("That photo is too big. Please choose one under 10 MB."));
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onerror = () => {
+            reject(new Error("The photo could not be read. Please try another one."));
+        };
+
+        reader.onload = () => {
+            const image = new Image();
+
+            image.onerror = () => {
+                reject(new Error("That file is not a valid picture."));
+            };
+
+            image.onload = () => {
+
+                if (image.width < 200 || image.height < 250) {
+                    reject(new Error("The photo is too small. Please use a clearer photo."));
+                    return;
+                }
+
+                const canvas = document.createElement("canvas");
+
+                canvas.width = PHOTO_WIDTH;
+                canvas.height = PHOTO_HEIGHT;
+
+                const context = canvas.getContext("2d");
+
+                // Cut a passport-shaped area out of the picture (leaning towards the top, where faces are)
+                const targetRatio = PHOTO_WIDTH / PHOTO_HEIGHT;
+
+                let cropWidth = image.width;
+                let cropHeight = image.height;
+
+                if (cropWidth / cropHeight > targetRatio) {
+                    cropWidth = cropHeight * targetRatio;
+                } else {
+                    cropHeight = cropWidth / targetRatio;
+                }
+
+                const cropX = (image.width - cropWidth) / 2;
+                const cropY = (image.height - cropHeight) * 0.2;
+
+                context.fillStyle = "#ffffff";
+                context.fillRect(0, 0, PHOTO_WIDTH, PHOTO_HEIGHT);
+
+                context.drawImage(
+                    image,
+                    cropX, cropY, cropWidth, cropHeight,
+                    0, 0, PHOTO_WIDTH, PHOTO_HEIGHT
+                );
+
+                resolve(canvas.toDataURL("image/jpeg", 0.85));
+            };
+
+            image.src = reader.result;
+        };
+
+        reader.readAsDataURL(file);
+    });
+}
+
+// <img> tag for a saved photo (empty text if there is no photo)
+function photoImgHTML(application) {
+    const photo = application.photo;
+
+    if (
+        typeof photo === "string" &&
+        /^data:image\/(jpeg|png);base64,[A-Za-z0-9+/=]+$/.test(photo)
+    ) {
+        return `
+            <img
+                src="${photo}"
+                alt="Passport photo of ${escapeHTML(application.applicantname)}"
+                style="display:block;width:105px;height:135px;object-fit:cover;border-radius:6px;border:2px solid #d4af37;margin-bottom:14px;"
+            >
+        `;
+    }
+
+    return "";
+}
+
+// Connect the photo box on the application form
+function setupPhotoInput() {
+    const input = getElement("applicantPhoto");
+    const preview = getElement("photoPreview");
+
+    if (!input) return;
+
+    input.addEventListener("change", async () => {
+        applicantPhotoData = "";
+
+        if (preview) {
+            preview.hidden = true;
+        }
+
+        const file = input.files[0];
+
+        if (!file) return;
+
+        try {
+            applicantPhotoData = await makePassportPhoto(file);
+
+            if (preview) {
+                preview.src = applicantPhotoData;
+                preview.hidden = false;
+            }
+
+        } catch (error) {
+            showMessage(error.message);
+            input.value = "";
+        }
+    });
+}
+
+
+// ==========================================
 // 3. AUTHENTICATION
 // ==========================================
 
@@ -593,6 +732,8 @@ async function showJobs() {
                 ${escapeHTML(job.Salary || "Salary not specified")}
             </p>
 
+            ${job.positions ? `<p>Vacancies: ${escapeHTML(String(job.positions))}</p>` : ""}
+
             <a href="job-details.html?job=${encodeURIComponent(job.$id)}">
                 View Job
             </a>
@@ -741,6 +882,11 @@ async function handleApplication(event) {
         return;
     }
 
+    if (!applicantPhotoData) {
+        showMessage("Please add your passport-size photo.");
+        return;
+    }
+
     const existing = await tablesDB.listRows({
         databaseId: DATABASE_ID,
         tableId: APPLICATIONS_TABLE,
@@ -776,6 +922,8 @@ async function handleApplication(event) {
         portfolioUrl: portfolio,
         coverMessage: value("coverMessage") || undefined,
 
+        photo: applicantPhotoData,
+
         status: "pending"
     });
 
@@ -801,10 +949,17 @@ async function handleApplication(event) {
     } catch (error) {
         console.error("Application error:", error);
 
-        showMessage(
-            error.message ||
-            "Could not submit your application. Please try again."
-        );
+        let message = error.message ||
+            "Could not submit your application. Please try again.";
+
+        // The most likely cause right after adding the photo feature
+        if (/photo/i.test(message)) {
+            message =
+                "The 'photo' column is missing in Appwrite. " +
+                "Add a column named photo (type mediumtext) to the Application table, then try again.";
+        }
+
+        showMessage(message);
     }
 }
 
@@ -813,59 +968,187 @@ async function handleApplication(event) {
 // 12. MATCHING SYSTEM
 // ==========================================
 
+// Higher number = higher qualification
+const EDUCATION_LEVELS = {
+    "any": 0,
+    "none": 0,
+    "primary school": 1,
+    "secondary school": 2,
+    "certificate": 3,
+    "diploma": 4,
+    "degree": 5,
+    "masters": 6,
+    "phd": 7
+};
+
+function educationRank(name) {
+    const rank = EDUCATION_LEVELS[String(name || "").trim().toLowerCase()];
+
+    return rank === undefined ? -1 : rank;
+}
+
+// Turns "wiring, repair" into ["wiring", "repair"]
+function splitSkills(text) {
+    return String(text || "")
+        .toLowerCase()
+        .split(",")
+        .map(item => item.trim())
+        .filter(Boolean);
+}
+
+// Score from 0 to 100: skills 50, experience 30, education 20
 function calculateMatch(job, application) {
-    let score = 0;
-    let total = 0;
 
-    function addScore(condition, weight) {
-        total += weight;
+    // SKILLS (50): share of the required skills the applicant has
+    const jobSkills = splitSkills(job.Skills);
+    const applicantSkills = splitSkills(application.skills);
 
-        if (condition) score += weight;
-    }
+    let skillPoints = 50;
 
-    const jobSkills = (job.Skills || "")
-        .toLowerCase()
-        .split(",")
-        .map(item => item.trim())
-        .filter(Boolean);
-
-    const applicantSkills = (application.skills || "")
-        .toLowerCase()
-        .split(",")
-        .map(item => item.trim())
-        .filter(Boolean);
-
-    let skillMatch = false;
-
-    if (jobSkills.length && applicantSkills.length) {
-        skillMatch = jobSkills.some(skill =>
+    if (jobSkills.length) {
+        const matched = jobSkills.filter(skill =>
             applicantSkills.some(appSkill =>
                 appSkill.includes(skill) || skill.includes(appSkill)
             )
-        );
+        ).length;
+
+        skillPoints = 50 * (matched / jobSkills.length);
     }
 
-    addScore(skillMatch, 40);
-
+    // EXPERIENCE (30): full marks when the requirement is met, part marks below it
     const requiredExperience = Number(job.experienceyears || 0);
     const applicantExperience = Number(application.experienceyears || 0);
 
-    addScore(
-        applicantExperience >= requiredExperience,
-        30
-    );
+    let experiencePoints = 30;
 
-    const requiredEducation = (job.Education || "").toLowerCase();
-    const applicantEducation = (application.education || "").toLowerCase();
+    if (requiredExperience > 0) {
+        experiencePoints = 30 * Math.min(applicantExperience / requiredExperience, 1);
+    }
 
-    addScore(
-        !requiredEducation ||
-        !applicantEducation ||
-        applicantEducation.includes(requiredEducation),
-        30
-    );
+    // EDUCATION (20): a higher qualification also meets the requirement
+    const requiredLevel = educationRank(job.Education);
+    const applicantLevel = educationRank(application.education);
 
-    return total ? Math.round((score / total) * 100) : 0;
+    let educationPoints = 20;
+
+    if (requiredLevel > 0) {
+        if (applicantLevel >= requiredLevel) {
+            educationPoints = 20;
+        } else if (applicantLevel >= 0 && applicantLevel === requiredLevel - 1) {
+            educationPoints = 10;
+        } else {
+            educationPoints = 0;
+        }
+    }
+
+    return Math.round(skillPoints + experiencePoints + educationPoints);
+}
+
+
+// ==========================================
+// 12B. AUTOMATIC SELECTION OF THE BEST APPLICANTS
+// ==========================================
+
+// Rank everyone who applied for one job, best first.
+// Ties are broken by: more experience, higher education, then who applied first.
+function rankApplicantsForJob(job, applications) {
+
+    const entries = applications.map(application => ({
+        application,
+        score: calculateMatch(job, application)
+    }));
+
+    entries.sort((first, second) => {
+
+        if (second.score !== first.score) {
+            return second.score - first.score;
+        }
+
+        const experienceGap =
+            Number(second.application.experienceyears || 0) -
+            Number(first.application.experienceyears || 0);
+
+        if (experienceGap !== 0) return experienceGap;
+
+        const educationGap =
+            educationRank(second.application.education) -
+            educationRank(first.application.education);
+
+        if (educationGap !== 0) return educationGap;
+
+        return String(first.application.$createdAt || "")
+            .localeCompare(String(second.application.$createdAt || ""));
+    });
+
+    const positions = Number(job.positions) || 0;
+
+    // Automatic selection only starts when MORE people apply than there are positions
+    const exceeded = positions > 0 && entries.length > positions;
+
+    entries.forEach((entry, position) => {
+        entry.rank = position + 1;
+        entry.autoSelected = exceeded && position < positions;
+    });
+
+    return { entries, positions, exceeded };
+}
+
+// Save the automatic result in each application (employer's browser has permission to do this)
+async function syncAutoSelection(ranking) {
+    const automaticStatuses = ["pending", "selected", "not_selected"];
+
+    let allSaved = true;
+
+    for (const entry of ranking.entries) {
+        const application = entry.application;
+
+        // Do not override the employer's own decisions
+        if (!automaticStatuses.includes(application.status)) continue;
+
+        const wanted = !ranking.exceeded
+            ? "pending"
+            : entry.autoSelected ? "selected" : "not_selected";
+
+        if (application.status === wanted) continue;
+
+        try {
+            await tablesDB.updateRow({
+                databaseId: DATABASE_ID,
+                tableId: APPLICATIONS_TABLE,
+                rowId: application.$id,
+                data: { status: wanted }
+            });
+
+            application.status = wanted;
+
+        } catch (error) {
+            console.error("Could not save automatic selection:", error);
+            allSaved = false;
+        }
+    }
+
+    return allSaved;
+}
+
+// The words shown for an application status
+function statusLabel(status, job) {
+
+    // While the job is open the ranking can still change when someone new applies
+    const finalResult = job ? !isJobOpen(job) : true;
+
+    switch (status) {
+        case "shortlisted":
+            return "Shortlisted";
+
+        case "selected":
+            return finalResult ? "Selected" : "Currently selected";
+
+        case "not_selected":
+            return finalResult ? "Not selected" : "Currently not selected";
+
+        default:
+            return "Applied";
+    }
 }
 
 
@@ -895,12 +1178,16 @@ async function renderDashboard() {
             tableId: JOBS_TABLE,
             queries: [
                 Query.equal("employerid", user.$id),
-                Query.limit(100)
+                Query.limit(100),
+                Query.orderDesc("$createdAt")
             ]
         });
 
         const jobs = jobsResult.rows || [];
-        const applications = [];
+
+        let totalApplications = 0;
+        let selectionSaved = true;
+        let html = "";
 
         for (const job of jobs) {
             const result = await tablesDB.listRows({
@@ -912,85 +1199,120 @@ async function renderDashboard() {
                 ]
             });
 
-            for (const application of result.rows) {
-                applications.push({
-                    ...application,
-                    jobTitle: job.title
-                });
-            }
-        }
+            const rows = result.rows || [];
 
-        window.applicationsCache = applications;
+            if (!rows.length) continue;
+
+            totalApplications += rows.length;
+
+            const ranking = rankApplicantsForJob(job, rows);
+
+            // Pick the best applicants automatically when there are more applicants than positions
+            if (!(await syncAutoSelection(ranking))) {
+                selectionSaved = false;
+            }
+
+            let noteHTML = "";
+
+            if (ranking.exceeded) {
+                noteHTML = `<p>More people applied than there are positions, so the ${ranking.positions} best-qualified applicants are selected automatically.</p>`;
+            } else if (ranking.positions > 0) {
+                noteHTML = `<p>Applicants are within the number of positions. Automatic selection starts when more people apply.</p>`;
+            }
+
+            html += `
+                <section class="job-group">
+                    <h3>${escapeHTML(job.title)}</h3>
+
+                    <p>${escapeHTML(job.companyname)}</p>
+
+                    <p>
+                        <strong>Positions:</strong> ${ranking.positions > 0 ? ranking.positions : "Not set"}
+                        &nbsp;&nbsp;
+                        <strong>Applicants:</strong> ${ranking.entries.length}
+                    </p>
+
+                    ${noteHTML}
+                </section>
+            `;
+
+            html += ranking.entries.map(entry => {
+                const application = entry.application;
+
+                return `
+                    <article class="application-card">
+                        ${photoImgHTML(application)}
+
+                        <h3>${escapeHTML(application.applicantname)}</h3>
+
+                        <p>
+                            Status: <strong>${statusLabel(application.status, job)}</strong>
+                            ${ranking.exceeded ? ` · Rank #${entry.rank} of ${ranking.entries.length}` : ""}
+                        </p>
+
+                        <p>
+                            Match: ${entry.score}% — ${getMatchLabel(entry.score)}
+                        </p>
+
+                        <p>
+                            Email: ${escapeHTML(application.applicantemail)}
+                        </p>
+
+                        <p>
+                            Phone: ${escapeHTML(application.applicantphone || "Not provided")}
+                        </p>
+
+                        <p>
+                            Education: ${escapeHTML(application.education || "Not provided")}
+                        </p>
+
+                        <p>
+                            Experience: ${escapeHTML(String(application.experienceyears ?? "Not provided"))}
+                        </p>
+
+                        <p>
+                            Skills: ${escapeHTML(application.skills || "Not provided")}
+                        </p>
+
+                        <p>
+                            Cover message:
+                            ${escapeHTML(application.coverMessage || "None")}
+                        </p>
+
+                        <button
+                            type="button"
+                            onclick="shortlistApplicant('${application.$id}')"
+                        >
+                            ${application.status === "shortlisted" ? "Shortlisted ✓" : "Shortlist"}
+                        </button>
+                    </article>
+                `;
+            }).join("");
+        }
 
         const summary = getElement("dashboardSummary");
 
         if (summary) {
             summary.textContent =
-                `${jobs.length} jobs posted · ${applications.length} applications received`;
+                `${jobs.length} jobs posted · ${totalApplications} applications received`;
         }
 
-        if (!applications.length) {
+        if (!totalApplications) {
             container.innerHTML = "<p>No applications received yet.</p>";
             return;
         }
 
-        container.innerHTML = applications.map(application => {
-            const job = jobs.find(item => item.$id === application.jobid);
+        if (!selectionSaved) {
+            html = `
+                <p>
+                    The automatic selection could not be saved. In Appwrite, check that the
+                    status column of the Application table accepts the values
+                    "selected" and "not_selected".
+                </p>
+            ` + html;
+        }
 
-            const match = job
-                ? calculateMatch(job, application)
-                : 0;
-
-            return `
-                <article class="application-card">
-                    <h3>${escapeHTML(application.applicantname)}</h3>
-
-                    <p>
-                        Job: ${escapeHTML(application.jobTitle || "Unknown")}
-                    </p>
-
-                    <p>
-                        Email: ${escapeHTML(application.applicantemail)}
-                    </p>
-
-                    <p>
-                        Phone: ${escapeHTML(application.applicantphone || "Not provided")}
-                    </p>
-
-                    <p>
-                        Match: ${match}% — ${getMatchLabel(match)}
-                    </p>
-
-                    <p>
-                        Status: ${escapeHTML(application.status)}
-                    </p>
-
-                    <p>
-                        Education: ${escapeHTML(application.education || "Not provided")}
-                    </p>
-
-                    <p>
-                        Experience: ${escapeHTML(String(application.experienceyears ?? "Not provided"))}
-                    </p>
-
-                    <p>
-                        Skills: ${escapeHTML(application.skills || "Not provided")}
-                    </p>
-
-                    <p>
-                        Cover message:
-                        ${escapeHTML(application.coverMessage || "None")}
-                    </p>
-
-                    <button
-                        type="button"
-                        onclick="shortlistApplicant('${application.$id}')"
-                    >
-                        Shortlist
-                    </button>
-                </article>
-            `;
-        }).join("");
+        container.innerHTML = html;
 
     } catch (error) {
         console.error(error);
@@ -1276,11 +1598,12 @@ async function renderMyApplications() {
         const cards = [];
 
         for (const application of applications) {
+            let job = null;
             let jobTitle = "Job no longer available";
             let company = "";
 
             try {
-                const job = await tablesDB.getRow({
+                job = await tablesDB.getRow({
                     databaseId: DATABASE_ID,
                     tableId: JOBS_TABLE,
                     rowId: application.jobid
@@ -1295,6 +1618,8 @@ async function renderMyApplications() {
 
             cards.push(`
                 <article class="application-card">
+                    ${photoImgHTML(application)}
+
                     <h3>${escapeHTML(jobTitle)}</h3>
 
                     <p>${escapeHTML(company)}</p>
@@ -1304,7 +1629,7 @@ async function renderMyApplications() {
                     </p>
 
                     <p>
-                        Status: ${escapeHTML(application.status)}
+                        Status: <strong>${statusLabel(application.status, job)}</strong>
                     </p>
 
                     <a href="job-details.html?job=${encodeURIComponent(application.jobid)}">
@@ -1369,7 +1694,7 @@ async function renderMyJobs() {
 
                 <p>${escapeHTML(job.location)}</p>
 
-                <p>Status: ${escapeHTML(job.status)}</p>
+                <p>Status: ${escapeHTML(job.status)}${isExpired(job.deadlines) ? " (deadline passed)" : ""}</p>
 
                 <p>Positions: ${escapeHTML(String(job.positions))}</p>
 
@@ -1443,6 +1768,8 @@ async function toggleJobClosed(jobId, currentStatus) {
     }
 }
 
+window.toggleJobClosed = toggleJobClosed;
+
 
 // ==========================================
 // 19. DELETE A JOB
@@ -1484,6 +1811,8 @@ async function deleteJob(jobId) {
         showMessage("Could not delete this job.");
     }
 }
+
+window.deleteJob = deleteJob;
 
 
 // ==========================================
@@ -1579,6 +1908,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     setupPasswordToggle();
     setupFilters();
+    setupPhotoInput();
 
     await updateAuthBar();
 
