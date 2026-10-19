@@ -455,6 +455,7 @@ async function handleRegistration(event) {
 // ==========================================
 
 async function handleLogin(event) {
+    alert("The login function has started!");
     window.handleLogin = handleLogin;
     event.preventDefault();
 
