@@ -1552,7 +1552,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const loginForm = getElement("loginForm");
 
     if (loginForm) {
-        loginForm.addEventListener("submit", handleLogin);
+        loginForm.addEvent("submit", handleLogin);
     }
 
     // Job posting
