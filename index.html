@@ -20,9 +20,17 @@
             <h1>JobConnect</h1>
             <p>Connect. Apply. Get Hired.</p>
             <div class="buttons">
-                <button onclick="showJobs()">Find Jobs</button>
-                <button class="btn-outline" onclick="goPostJob()">Post a Job</button>
+    <button type="button"
+        onclick="document.getElementById('jobs').scrollIntoView({behavior:'smooth'})">
+        Find Jobs
+    </button>
+
+    <button type="button" class="btn-outline"
+        onclick="window.location.href='employer.html'">
+        Post a Job
+    </button>
             </div>
+                
         </div>
     </section>
 
