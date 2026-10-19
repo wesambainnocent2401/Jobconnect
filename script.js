@@ -309,45 +309,58 @@ async function handleRegistration(event) {
 }
 
 
+
+
 // ==========================================
-// 5. LOGIN
+// LOGIN SYSTEM
 // ==========================================
 
 async function handleLogin(event) {
     event.preventDefault();
 
-    const email = value("loginEmail").toLowerCase();
-    const password = value("loginPassword");
+    const email = document.getElementById("loginEmail")?.value
+        .trim()
+        .toLowerCase();
+
+    const password = document.getElementById("loginPassword")?.value;
+
+    const submitButton = event.submitter ||
+        document.querySelector("#loginForm button[type='submit']");
 
     if (!email || !password) {
         showMessage("Please enter your email and password.");
         return;
     }
 
-    const submitButton = event.submitter;
-
-    if (submitButton) submitButton.disabled = true;
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = "Logging in...";
+    }
 
     try {
+        // Sign in with Appwrite
         await account.createEmailPasswordSession({
-            email,
-            password
+            email: email,
+            password: password
         });
 
+        // Retrieve the user's JobConnect profile
         const profile = await getMyProfile();
 
         if (!profile) {
             showMessage(
-                "Your account is signed in, but its JobConnect profile could not be found. Please contact the administrator."
+                "You are signed in, but your JobConnect profile could not be found. Please contact support."
             );
             return;
         }
 
+        // Redirect according to account role
         if (profile.role === "employer") {
             window.location.href = "employer-dashboard.html";
             return;
         }
 
+        // Respect a safe requested destination
         const params = new URLSearchParams(window.location.search);
         const next = params.get("next");
 
@@ -366,13 +379,44 @@ async function handleLogin(event) {
         console.error("Login error:", error);
 
         showMessage(
-            error.message ||
-            "Login failed. Please check your email and password."
+            error.message || "Login failed. Please check your email and password."
         );
 
     } finally {
-        if (submitButton) submitButton.disabled = false;
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = "Log in";
+        }
     }
+}
+
+
+// ==========================================
+// CONNECT LOGIN FORM
+// ==========================================
+
+function initializeLoginForm() {
+    const loginForm = document.getElementById("loginForm");
+
+    if (!loginForm) return;
+
+    loginForm.addEventListener("submit", handleLogin);
+}
+
+
+// ==========================================
+// SHOW / HIDE PASSWORD
+// ==========================================
+
+function initializePasswordToggle() {
+    const showPassword = document.getElementById("showPassword");
+    const passwordInput = document.getElementById("loginPassword");
+
+    if (!showPassword || !passwordInput) return;
+
+    showPassword.addEventListener("change", function () {
+        passwordInput.type = this.checked ? "text" : "password";
+    });
 }
 
 
