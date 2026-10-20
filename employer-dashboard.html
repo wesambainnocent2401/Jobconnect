@@ -3,45 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Employer Dashboard - JobConnect</title>
-
+    <meta name="description" content="JobConnect connects job seekers with employers and career opportunities.">
     <link rel="icon" href="logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
 </head>
-
-<body>
+<body data-requires="employer">
 
 <nav class="auth-bar" id="authBar"></nav>
 
 <header>
-    <img src="logo.svg" class="logo" alt="JobConnect logo">
+    <a href="index.html" class="brand"><img src="logo.svg" class="logo" alt="JobConnect logo"></a>
     <h1>JobConnect</h1>
     <p>Employer Dashboard</p>
 </header>
 
 <main>
 
-<section class="profile-form profile-wide">
+    <section class="profile-wide">
+        <h2 class="page-title">Applications Received</h2>
+        <p class="page-summary" id="dashboardSummary">Loading applications...</p>
 
-    <h2 class="dashboard-title">Applications Received</h2>
+        <div id="applicationsList"></div>
 
-    <p class="profile-intro" id="dashboardSummary">Loading applications...</p>
-
-    <div id="applicationsList"></div>
-
-    <div class="form-actions">
-        <button type="button" onclick="goPostJob()">Post a New Job</button>
-        <button type="button" class="btn-outline" onclick="location.href='index.html'">Back to Home</button>
-    </div>
-
-</section>
+        <div class="form-actions">
+            <button type="button" onclick="goPostJob()">Post a New Job</button>
+            <button type="button" class="btn-outline" onclick="location.href='my-jobs.html'">My Jobs</button>
+            <button type="button" class="btn-outline" onclick="location.href='index.html'">Back to Home</button>
+        </div>
+    </section>
 
 </main>
 
 <footer>
-    <p>© 2026 JobConnect</p>
+    <p>&copy; 2026 JobConnect. All rights reserved.</p>
+    <p class="footer-tag">Connecting talent with opportunity.</p>
 </footer>
 
 <script type="module" src="script.js"></script>
+
+</body>
 </html>
