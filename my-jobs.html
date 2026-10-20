@@ -3,48 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>My Jobs - JobConnect</title>
-
+    <meta name="description" content="JobConnect connects job seekers with employers and career opportunities.">
     <link rel="icon" href="logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
 </head>
-
-<body>
+<body data-requires="employer">
 
 <nav class="auth-bar" id="authBar"></nav>
 
 <header>
-    <img src="logo.svg" class="logo" alt="JobConnect logo">
+    <a href="index.html" class="brand"><img src="logo.svg" class="logo" alt="JobConnect logo"></a>
     <h1>JobConnect</h1>
     <p>My Jobs</p>
 </header>
 
 <main>
 
-<section class="profile-form profile-wide">
+    <section class="profile-wide">
+        <h2 class="page-title">Jobs I Posted</h2>
+        <p class="page-summary" id="myJobsSummary">Loading your jobs...</p>
 
-    <h2 class="dashboard-title">Jobs I Posted</h2>
+        <div id="myJobsList"></div>
 
-    <p class="profile-intro" id="myJobsSummary">Loading your jobs...</p>
-
-    <div id="myJobsList"></div>
-
-    <div class="form-actions">
-        <button type="button" onclick="goPostJob()">Post a New Job</button>
-        <button type="button" class="btn-outline" onclick="location.href='employer-dashboard.html'">View Applicants</button>
-        <button type="button" class="btn-outline" onclick="location.href='index.html'">Back to Home</button>
-    </div>
-
-</section>
+        <div class="form-actions">
+            <button type="button" onclick="goPostJob()">Post a New Job</button>
+            <button type="button" class="btn-outline" onclick="location.href='employer-dashboard.html'">View Applicants</button>
+            <button type="button" class="btn-outline" onclick="location.href='index.html'">Back to Home</button>
+        </div>
+    </section>
 
 </main>
 
 <footer>
-    <p>© 2026 JobConnect</p>
+    <p>&copy; 2026 JobConnect. All rights reserved.</p>
+    <p class="footer-tag">Connecting talent with opportunity.</p>
 </footer>
 
 <script type="module" src="script.js"></script>
+
+<script>
+    // If script.js has not started after 8 seconds, show a warning (it disappears if the script starts late)
+    setTimeout(function () {
+        if (window.__jobconnectReady) return;
+
+        var banner = document.createElement("div");
+        banner.id = "jc-banner";
+        banner.textContent = "JobConnect has not started. Check your internet connection and reload. " +
+            "If this stays, script.js may be missing or outdated on the website.";
+        banner.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:9999;padding:14px 16px;" +
+            "background:#7a1f1f;color:#fff;font:14px/1.4 Arial,sans-serif;text-align:center;";
+        document.body.appendChild(banner);
+    }, 8000);
+</script>
 
 </body>
 </html>
