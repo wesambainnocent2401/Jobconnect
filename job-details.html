@@ -3,60 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Job Details - JobConnect</title>
-
+    <meta name="description" content="JobConnect connects job seekers with employers and career opportunities.">
     <link rel="icon" href="logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <nav class="auth-bar" id="authBar"></nav>
 
 <header>
-    <img src="logo.svg" class="logo" alt="JobConnect logo">
+    <a href="index.html" class="brand"><img src="logo.svg" class="logo" alt="JobConnect logo"></a>
     <h1>JobConnect</h1>
     <p>Job Details</p>
 </header>
 
 <main>
 
-<section class="profile-form profile-wide" id="jobDetails">
+    <section class="profile-wide">
 
-    <!-- JOB INFORMATION -->
-    <div class="form-section">
-        <h2 id="jobTitle">Loading job...</h2>
+        <div class="details-card" id="jobDetails">Loading job...</div>
 
-        <div id="jobInformation"></div>
-    </div>
+        <div class="form-section" id="applicationSection">
+            <h2>Apply for this Job</h2>
 
-    <!-- APPLICATION -->
-    <div class="form-section" id="applicationSection">
-
-        <h2>Apply for this Job</h2>
-
-        <div id="loginNotice" hidden></div>
-
-        <form id="applicationForm">
-
-            <div class="form-grid">
-
+            <form id="applicationForm">
+                <div class="form-grid">
                 <div class="field full">
                     <label for="applicantName">Full Name</label>
                     <input type="text" id="applicantName" placeholder="Enter your full name" required>
                 </div>
-
                 <div class="field">
                     <label for="applicantPhone">Phone Number</label>
-                    <input type="tel" id="applicantPhone" placeholder="Enter your phone number" required>
+                    <input type="tel" id="applicantPhone" placeholder="07XX XXX XXX" required>
                 </div>
-
                 <div class="field">
                     <label for="applicantEmail">Email Address</label>
                     <input type="email" id="applicantEmail" placeholder="you@example.com" required>
                 </div>
-
+                <div class="field full">
+                    <label for="applicantPhoto">Passport-size Photo</label>
+                    <input type="file" id="applicantPhoto" accept="image/*" required>
+                    <small class="hint">A clear photo of your face with a plain background. It is cropped to passport size automatically.</small>
+                    <img id="photoPreview" class="photo-preview" alt="Your passport photo preview" hidden>
+                </div>
                 <div class="field">
                     <label for="applicantEducation">Highest Qualification</label>
                     <select id="applicantEducation" required>
@@ -69,50 +59,41 @@
                         <option value="PhD">PhD</option>
                     </select>
                 </div>
-
                 <div class="field">
                     <label for="applicantExperience">Years of Experience</label>
-                    <input type="number" id="applicantExperience" min="0" placeholder="e.g. 3" required>
+                    <input type="number" id="applicantExperience" placeholder="e.g. 3" required min="0">
                 </div>
-
                 <div class="field full">
                     <label for="applicantSkills">Skills</label>
                     <textarea id="applicantSkills" placeholder="List your relevant skills" required></textarea>
                     <small class="hint">Separate each skill with a comma.</small>
                 </div>
-
                 <div class="field full">
                     <label for="portfolio">Portfolio Link</label>
                     <input type="url" id="portfolio" placeholder="https://...">
                     <small class="hint">Optional.</small>
                 </div>
-
                 <div class="field full">
                     <label for="coverMessage">Why are you suitable for this job?</label>
                     <textarea id="coverMessage" placeholder="Tell the employer briefly why you are suitable..." required></textarea>
                 </div>
+                </div>
 
-            </div>
+                <div class="form-actions">
+                    <button type="submit">Submit Application</button>
+                    <button type="button" class="btn-outline" onclick="location.href='index.html#jobs'">Back to Jobs</button>
+                </div>
+            </form>
+        </div>
 
-            <div class="form-actions">
-                <button type="submit">Submit Application</button>
-                <button type="button" class="btn-outline" onclick="location.href='index.html#jobs'">Back to Jobs</button>
-            </div>
-
-        </form>
-
-    </div>
-
-</section>
+    </section>
 
 </main>
 
 <footer>
-    <p>© 2026 JobConnect</p>
+    <p>&copy; 2026 JobConnect. All rights reserved.</p>
+    <p class="footer-tag">Connecting talent with opportunity.</p>
 </footer>
-    <label for="applicantPhoto">Passport-size Photo</label>
-<input type="file" id="applicantPhoto" accept="image/*" required>
-<img id="photoPreview" alt="Photo preview" hidden style="width:105px;height:135px;object-fit:cover;margin-top:10px;">
 
 <script type="module" src="script.js"></script>
 
