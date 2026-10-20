@@ -400,11 +400,30 @@ async function requireLogin() {
     return user;
 }
 
-// <body data-requires="employer"> / "jobseeker" / "login" / "guest"
+// An administrator is an Appwrite user that has the label "admin" (added in the Appwrite console)
+function isAdmin(user) {
+    return Array.isArray(user?.labels) && user.labels.includes("admin");
+}
+
+// <body data-requires="employer"> / "jobseeker" / "login" / "guest" / "admin"
 async function guardPage() {
     const required = document.body?.dataset?.requires;
 
     if (!required) return true;
+
+    if (required === "admin") {
+        const admin = await requireLogin();
+
+        if (!admin) return false;
+
+        if (!isAdmin(admin)) {
+            showMessage("This page is for JobConnect administrators.");
+            window.location.href = "index.html";
+            return false;
+        }
+
+        return true;
+    }
 
     // Login and register pages are only for people who are NOT signed in yet
     if (required === "guest") {
@@ -702,6 +721,7 @@ async function updateAuthBar() {
     authBar.innerHTML = `
         <span>Welcome, ${name}</span>
         <a href="index.html">Home</a>
+        ${isAdmin(user) ? '<a href="admin.html">Admin</a>' : ""}
         ${
             profile?.role === "employer"
                 ? `<a href="employer-dashboard.html">Dashboard</a>
@@ -2057,6 +2077,217 @@ function setupFilters() {
 }
 
 
+
+// ==========================================
+// 21B. ADMIN DASHBOARD
+// ==========================================
+// Real protection comes from Appwrite: the "admin" label must be given
+// Read / Update / Delete permission on the tables. This page only shows the data.
+
+let adminUsers = [];
+let adminJobs = [];
+
+async function countRows(tableId, queries = []) {
+    const result = await tablesDB.listRows({
+        databaseId: DATABASE_ID,
+        tableId,
+        queries: [...queries, Query.limit(1)]
+    });
+
+    return result.total ?? result.rows.length;
+}
+
+function setText(id, text) {
+    const element = getElement(id);
+
+    if (element) {
+        element.textContent = text;
+    }
+}
+
+function renderAdminUsers() {
+    const body = getElement("usersTable");
+
+    if (!body) return;
+
+    const search = value("userSearch").toLowerCase();
+
+    const rows = adminUsers.filter(profile =>
+        [profile.fullName, profile.email].join(" ").toLowerCase().includes(search)
+    );
+
+    if (!rows.length) {
+        body.innerHTML = '<tr><td colspan="4">No users found.</td></tr>';
+        return;
+    }
+
+    body.innerHTML = rows.map(profile => `
+        <tr>
+            <td>${escapeHTML(profile.fullName || "Not provided")}</td>
+            <td>${escapeHTML(profile.email || "Not provided")}</td>
+            <td>${escapeHTML(profile.role === "employer" ? "Employer" : "Job seeker")}</td>
+            <td>${escapeHTML(formatDate(profile.$createdAt))}</td>
+        </tr>
+    `).join("");
+}
+
+function adminJobStatus(job) {
+    if (job.status !== "open") return "Closed";
+    if (isExpired(job.deadlines)) return "Expired";
+
+    return "Open";
+}
+
+function renderAdminJobs() {
+    const body = getElement("jobsTable");
+
+    if (!body) return;
+
+    const search = value("jobSearchAdmin").toLowerCase();
+
+    const rows = adminJobs.filter(job =>
+        [job.title, job.companyname].join(" ").toLowerCase().includes(search)
+    );
+
+    if (!rows.length) {
+        body.innerHTML = '<tr><td colspan="5">No jobs found.</td></tr>';
+        return;
+    }
+
+    body.innerHTML = rows.map(job => `
+        <tr>
+            <td>${escapeHTML(job.title)}</td>
+            <td>${escapeHTML(job.companyname)}</td>
+            <td>${escapeHTML(job.location)}</td>
+            <td>${adminJobStatus(job)}</td>
+            <td>
+                <button type="button" onclick="location.href='job-details.html?job=${encodeURIComponent(job.$id)}'">View</button>
+                <button type="button" class="btn-outline" onclick="adminToggleJob('${job.$id}', '${job.status}')">
+                    ${job.status === "open" ? "Close" : "Reopen"}
+                </button>
+                <button type="button" class="danger-btn" onclick="adminDeleteJob('${job.$id}')">Delete</button>
+            </td>
+        </tr>
+    `).join("");
+}
+
+async function loadAdminData() {
+    const [
+        totalUsers, jobseekers, employers,
+        totalJobs, totalApplications,
+        pending, shortlisted, selected, notSelected
+    ] = await Promise.all([
+        countRows(PROFILES_TABLE),
+        countRows(PROFILES_TABLE, [Query.equal("role", "jobseeker")]),
+        countRows(PROFILES_TABLE, [Query.equal("role", "employer")]),
+        countRows(JOBS_TABLE),
+        countRows(APPLICATIONS_TABLE),
+        countRows(APPLICATIONS_TABLE, [Query.equal("status", "pending")]),
+        countRows(APPLICATIONS_TABLE, [Query.equal("status", "shortlisted")]),
+        countRows(APPLICATIONS_TABLE, [Query.equal("status", "selected")]),
+        countRows(APPLICATIONS_TABLE, [Query.equal("status", "not_selected")])
+    ]);
+
+    const usersResult = await tablesDB.listRows({
+        databaseId: DATABASE_ID,
+        tableId: PROFILES_TABLE,
+        queries: [Query.limit(100), Query.orderDesc("$createdAt")]
+    });
+
+    const jobsResult = await tablesDB.listRows({
+        databaseId: DATABASE_ID,
+        tableId: JOBS_TABLE,
+        queries: [Query.limit(100), Query.orderDesc("$createdAt")]
+    });
+
+    adminUsers = usersResult.rows || [];
+    adminJobs = jobsResult.rows || [];
+
+    // "Active" = open and not past its deadline (exact when there are 100 jobs or fewer)
+    const activeJobs = totalJobs <= adminJobs.length
+        ? adminJobs.filter(isJobOpen).length
+        : await countRows(JOBS_TABLE, [Query.equal("status", "open")]);
+
+    setText("totalUsers", totalUsers);
+    setText("totalJobseekers", jobseekers);
+    setText("totalEmployers", employers);
+    setText("totalJobs", totalJobs);
+    setText("activeJobs", activeJobs);
+    setText("totalApplications", totalApplications);
+
+    setText("applicationStats", `${plural(totalApplications, "application", "applications")} received, ${pending} still waiting for a decision.`);
+    setText("shortlistedStats", `Shortlisted by employers: ${shortlisted}`);
+    setText("selectionStats", `Selected automatically: ${selected} · Not selected: ${notSelected}`);
+
+    renderAdminUsers();
+    renderAdminJobs();
+}
+
+async function initializeAdmin() {
+    const notice = getElement("adminNotice");
+    const content = getElement("adminContent");
+
+    if (!content) return;
+
+    try {
+        await loadAdminData();
+
+        if (notice) notice.hidden = true;
+
+        content.hidden = false;
+
+        getElement("userSearch")?.addEventListener("input", renderAdminUsers);
+        getElement("jobSearchAdmin")?.addEventListener("input", renderAdminJobs);
+
+    } catch (error) {
+        console.error("Admin dashboard error:", error);
+
+        if (notice) {
+            notice.textContent =
+                "Could not load the admin data. In Appwrite, give the label \"admin\" " +
+                "Read, Update and Delete permission on the profiles, jobs and Application tables.";
+        }
+    }
+}
+
+async function adminToggleJob(jobId, currentStatus) {
+    try {
+        await tablesDB.updateRow({
+            databaseId: DATABASE_ID,
+            tableId: JOBS_TABLE,
+            rowId: jobId,
+            data: { status: currentStatus === "open" ? "closed" : "open" }
+        });
+
+        await loadAdminData();
+
+    } catch (error) {
+        console.error(error);
+        showMessage("Could not update this job. Check the admin permissions in Appwrite.");
+    }
+}
+
+async function adminDeleteJob(jobId) {
+    if (!confirm("Delete this job for good? This cannot be undone.")) return;
+
+    try {
+        await tablesDB.deleteRow({
+            databaseId: DATABASE_ID,
+            tableId: JOBS_TABLE,
+            rowId: jobId
+        });
+
+        await loadAdminData();
+
+    } catch (error) {
+        console.error(error);
+        showMessage("Could not delete this job. Check the admin permissions in Appwrite.");
+    }
+}
+
+window.adminToggleJob = adminToggleJob;
+window.adminDeleteJob = adminDeleteJob;
+
 // ==========================================
 // 22. CONNECT FORMS AND PAGE INITIALIZATION
 // ==========================================
@@ -2129,6 +2360,10 @@ async function initializePage() {
 
     if (getElement("myJobsList")) {
         await renderMyJobs();
+    }
+
+    if (getElement("adminContent")) {
+        await initializeAdmin();
     }
 }
 
