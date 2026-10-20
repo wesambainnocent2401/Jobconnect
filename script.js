@@ -133,6 +133,11 @@ function getMatchLabel(score) {
     return "Low match";
 }
 
+// "1 job" / "2 jobs"
+function plural(count, one, many) {
+    return `${count} ${count === 1 ? one : many}`;
+}
+
 function formatDate(date) {
     if (!date) return "Not available";
 
@@ -291,15 +296,24 @@ function setupPhotoInput() {
 // 3. AUTHENTICATION
 // ==========================================
 
-async function getCurrentUser() {
-    try {
-        return await account.get();
-    } catch {
-        return null;
-    }
+// The signed-in user and their profile are looked up once per page, not on every call
+let sessionUserPromise = null;
+let sessionProfilePromise = null;
+
+function resetSessionCache() {
+    sessionUserPromise = null;
+    sessionProfilePromise = null;
 }
 
-async function getMyProfile() {
+async function getCurrentUser() {
+    if (!sessionUserPromise) {
+        sessionUserPromise = account.get().catch(() => null);
+    }
+
+    return sessionUserPromise;
+}
+
+async function loadMyProfile() {
     const user = await getCurrentUser();
 
     if (!user) return null;
@@ -322,6 +336,14 @@ async function getMyProfile() {
     }
 }
 
+async function getMyProfile() {
+    if (!sessionProfilePromise) {
+        sessionProfilePromise = loadMyProfile();
+    }
+
+    return sessionProfilePromise;
+}
+
 async function requireLogin() {
     const user = await getCurrentUser();
 
@@ -339,9 +361,57 @@ async function requireLogin() {
     return user;
 }
 
+// <body data-requires="employer"> / "jobseeker" / "login" / "guest"
+async function guardPage() {
+    const required = document.body?.dataset?.requires;
+
+    if (!required) return true;
+
+    // Login and register pages are only for people who are NOT signed in yet
+    if (required === "guest") {
+        const user = await getCurrentUser();
+
+        if (user) {
+            const profile = await getMyProfile();
+
+            window.location.href =
+                profile?.role === "employer" ? "employer-dashboard.html" : "index.html";
+
+            return false;
+        }
+
+        return true;
+    }
+
+    const user = await requireLogin();
+
+    if (!user) return false;
+
+    if (required === "login") return true;
+
+    const profile = await getMyProfile();
+
+    if (!profile || profile.role !== required) {
+        showMessage(
+            required === "employer"
+                ? "This page is for employer accounts."
+                : "This page is for job seeker accounts."
+        );
+
+        window.location.href =
+            profile?.role === "employer" ? "employer-dashboard.html" : "index.html";
+
+        return false;
+    }
+
+    return true;
+}
+
 async function logout() {
     try {
         await account.deleteSession("current");
+
+        resetSessionCache();
 
         window.location.href = "index.html";
 
@@ -405,6 +475,8 @@ async function handleRegistration(event) {
             password
         });
 
+        resetSessionCache();
+
         await tablesDB.createRow({
             databaseId: DATABASE_ID,
             tableId: PROFILES_TABLE,
@@ -455,7 +527,6 @@ async function handleRegistration(event) {
 // ==========================================
 
 async function handleLogin(event) {
-    alert("The login function has started!");
     window.handleLogin = handleLogin;
     event.preventDefault();
 
@@ -484,6 +555,8 @@ async function handleLogin(event) {
             email: email,
             password: password
         });
+
+        resetSessionCache();
 
         // Retrieve the user's JobConnect profile
         const profile = await getMyProfile();
@@ -516,10 +589,12 @@ async function handleLogin(event) {
             window.location.href = "index.html";
         }
 
-    } } catch (error) {
-    console.error("Login error:", error);
-    alert("Login error: " + error.message);
-}
+    } catch (error) {
+        console.error("Login error:", error);
+
+        showMessage(
+            error.message || "Login failed. Please check your email and password."
+        );
 
     } finally {
         if (submitButton) {
@@ -672,7 +747,7 @@ async function loadJobs() {
 // ==========================================
 
 async function showJobs() {
-    const jobs = await loadJobs();
+    const jobs = window.jobsCache || await loadJobs();
 
     const container = getElement("jobsList");
 
@@ -700,7 +775,7 @@ async function showJobs() {
     const count = getElement("resultsCount");
 
     if (count) {
-        count.textContent = `${filtered.length} jobs found`;
+        count.textContent = `${plural(filtered.length, "job", "jobs")} found`;
     }
 
     if (!filtered.length) {
@@ -826,11 +901,7 @@ async function loadJobDetails() {
             </p>
         `;
 
-        const section = getElement("applicationSection");
-
-        if (section && !isJobOpen(job)) {
-            section.innerHTML = "<p>This job is no longer accepting applications.</p>";
-        }
+        await prepareApplicationSection(job);
 
     } catch (error) {
         console.error(error);
@@ -843,6 +914,87 @@ async function loadJobDetails() {
 // ==========================================
 // 11. APPLY FOR A JOB
 // ==========================================
+
+// Show a message instead of the application form
+function showApplicationNotice(html) {
+    const form = getElement("applicationForm");
+
+    let notice = getElement("applicationNotice");
+
+    if (!notice) {
+        notice = document.createElement("div");
+        notice.id = "applicationNotice";
+
+        const section = getElement("applicationSection") || document.body;
+
+        section.prepend(notice);
+    }
+
+    notice.innerHTML = html;
+    notice.hidden = false;
+
+    if (form) form.hidden = true;
+}
+
+// Fill the form with the person's saved profile (only boxes that are still empty)
+function prefillApplicationForm(profile, user) {
+    const details = {
+        applicantName: profile?.fullName || user?.name,
+        applicantEmail: profile?.email || user?.email,
+        applicantPhone: profile?.Phone,
+        applicantEducation: profile?.education,
+        applicantExperience: profile?.experienceYears,
+        applicantSkills: profile?.skills,
+        portfolio: profile?.portfolioUrl
+    };
+
+    for (const [id, text] of Object.entries(details)) {
+        const element = getElement(id);
+
+        if (element && !element.value && text !== undefined && text !== null) {
+            element.value = text;
+        }
+    }
+}
+
+async function prepareApplicationSection(job) {
+    if (!getElement("applicationSection") && !getElement("applicationForm")) return;
+
+    if (!isJobOpen(job)) {
+        showApplicationNotice("<p>This job is no longer accepting applications.</p>");
+        return;
+    }
+
+    const user = await getCurrentUser();
+
+    if (!user) {
+        const next = encodeURIComponent(
+            window.location.pathname.split("/").pop() + window.location.search
+        );
+
+        showApplicationNotice(`
+            <p>Please log in or create a job seeker account to apply for this job.</p>
+            <div class="notice-actions">
+                <a class="btn" href="login.html?next=${next}">Log in</a>
+                <a class="btn btn-outline" href="register.html">Create account</a>
+            </div>
+        `);
+
+        return;
+    }
+
+    const profile = await getMyProfile();
+
+    if (profile?.role === "employer") {
+        showApplicationNotice(
+            "<p>Employer accounts cannot apply for jobs. Log in with a job seeker account to apply.</p>"
+        );
+        return;
+    }
+
+    prefillApplicationForm(profile, user);
+}
+
 
 async function applyForJob(jobId) {
     window.location.href =
@@ -1293,7 +1445,7 @@ async function renderDashboard() {
 
         if (summary) {
             summary.textContent =
-                `${jobs.length} jobs posted · ${totalApplications} applications received`;
+                `${plural(jobs.length, "job", "jobs")} posted · ${plural(totalApplications, "application", "applications")} received`;
         }
 
         if (!totalApplications) {
@@ -1547,6 +1699,8 @@ async function handleProfileSave(event) {
             data
         });
 
+        resetSessionCache();
+
         showMessage("Your profile has been updated.");
 
     } catch (error) {
@@ -1586,7 +1740,7 @@ async function renderMyApplications() {
 
         if (summary) {
             summary.textContent =
-                `You have submitted ${applications.length} applications.`;
+                `You have submitted ${plural(applications.length, "application", "applications")}.`;
         }
 
         if (!applications.length) {
@@ -1677,7 +1831,7 @@ async function renderMyJobs() {
         const summary = getElement("myJobsSummary");
 
         if (summary) {
-            summary.textContent = `You have posted ${jobs.length} jobs.`;
+            summary.textContent = `You have posted ${plural(jobs.length, "job", "jobs")}.`;
         }
 
         if (!jobs.length) {
@@ -1910,6 +2064,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupPhotoInput();
 
     await updateAuthBar();
+
+    // Stop here if this person is not allowed on this page (they are being redirected)
+    if (!(await guardPage())) return;
 
     if (getElement("jobsList")) {
         await showJobs();
