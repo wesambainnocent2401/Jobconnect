@@ -1,12 +1,51 @@
-import {
-    Client,
-    Account,
-    TablesDB,
-    ID,
-    Query,
-    Permission,
-    Role
-} from "https://cdn.jsdelivr.net/npm/appwrite@17.0.0/+esm";
+// ==========================================
+// 0. START-UP: load the Appwrite library
+// ==========================================
+
+// A red message at the bottom of the screen, so a failure is never silent
+function showStartupError(message) {
+    const banner = document.createElement("div");
+
+    banner.id = "jc-error-banner";
+    banner.textContent = message;
+    banner.style.cssText =
+        "position:fixed;left:0;right:0;bottom:0;z-index:9999;padding:14px 16px;" +
+        "background:#7a1f1f;color:#fff;font:14px/1.4 Arial,sans-serif;text-align:center;";
+
+    document.body.appendChild(banner);
+}
+
+// If the first address is blocked on someone's network, the second one is tried
+const APPWRITE_SOURCES = [
+    "https://cdn.jsdelivr.net/npm/appwrite@17.0.0/+esm",
+    "https://esm.sh/appwrite@17.0.0"
+];
+
+let AppwriteSDK = null;
+
+for (const url of APPWRITE_SOURCES) {
+    try {
+        AppwriteSDK = await import(url);
+        break;
+    } catch (error) {
+        console.error("Could not load Appwrite from " + url, error);
+    }
+}
+
+if (!AppwriteSDK) {
+    showStartupError(
+        "JobConnect could not start because a required file could not be downloaded. " +
+        "Check your internet connection and reload the page."
+    );
+
+    throw new Error("The Appwrite library could not be loaded.");
+}
+
+const { Client, Account, TablesDB, ID, Query, Permission, Role } = AppwriteSDK;
+
+// Tell the page that the script started, and remove the "did not start" warning
+window.__jobconnectReady = true;
+document.getElementById("jc-banner")?.remove();
 
 
 // ==========================================
@@ -2022,7 +2061,7 @@ function setupFilters() {
 // 22. CONNECT FORMS AND PAGE INITIALIZATION
 // ==========================================
 
-document.addEventListener("DOMContentLoaded", async () => {
+async function initializePage() {
 
     // Registration
     const registerForm = getElement("registerForm");
@@ -2091,4 +2130,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (getElement("myJobsList")) {
         await renderMyJobs();
     }
-});
+}
+
+// The page may already be fully loaded by the time this file finishes starting up
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializePage);
+} else {
+    initializePage();
+}
