@@ -3,414 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobConnect</title>
     <meta name="description" content="JobConnect connects job seekers with employers and career opportunities.">
-    <title>JobConnect | Find Opportunities. Build Your Future.</title>
-
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
-
-    <style>
-        :root {
-            --gold: #d4af37;
-            --black: #101010;
-            --dark: #1b1b1b;
-            --white: #ffffff;
-            --muted: #bdbdbd;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background: var(--black);
-            color: var(--white);
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        button {
-            cursor: pointer;
-            font: inherit;
-        }
-
-        header {
-            background: #080808;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.35);
-            padding: 16px 7%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .logo {
-            color: var(--gold);
-            font-size: 27px;
-            font-weight: bold;
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 22px;
-            flex-wrap: wrap;
-        }
-
-        nav a {
-            color: var(--white);
-            font-size: 14px;
-        }
-
-        nav a:hover {
-            color: var(--gold);
-        }
-
-        .hero {
-            min-height: 440px;
-            padding: 85px 7%;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            justify-content: center;
-            background:
-                linear-gradient(rgba(0,0,0,0.78), rgba(0,0,0,0.9)),
-                var(--dark);
-        }
-
-        .hero-content {
-            max-width: 780px;
-        }
-
-        .hero h1 {
-            font-size: clamp(35px, 6vw, 58px);
-            line-height: 1.15;
-            margin-bottom: 20px;
-        }
-
-        .hero h1 span {
-            color: var(--gold);
-        }
-
-        .hero p {
-            color: #dddddd;
-            font-size: 17px;
-            margin-bottom: 30px;
-        }
-
-        .buttons {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 14px;
-        }
-
-        .btn {
-            display: inline-block;
-            border: 1px solid var(--gold);
-            background: var(--gold);
-            color: #111;
-            padding: 13px 25px;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        .btn:hover {
-            background: transparent;
-            color: var(--gold);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--gold);
-        }
-
-        .btn-outline:hover {
-            background: var(--gold);
-            color: #111;
-        }
-
-        .section {
-            padding: 65px 7%;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        .section-title h2 {
-            color: var(--gold);
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
-        .section-title p {
-            color: var(--muted);
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-        }
-
-        .feature-card {
-            background: var(--dark);
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 25px;
-            text-align: center;
-        }
-
-        .feature-card h3 {
-            color: var(--gold);
-            margin-bottom: 10px;
-        }
-
-        .feature-card p {
-            color: #cccccc;
-            font-size: 14px;
-        }
-
-        .jobs-section {
-            background: #151515;
-        }
-
-        .search-box {
-            max-width: 750px;
-            margin: 0 auto;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .search-box input,
-        .search-box select {
-            flex: 1;
-            min-width: 180px;
-            padding: 13px;
-            border-radius: 5px;
-            border: 1px solid #444;
-            background: #222;
-            color: white;
-        }
-
-        .search-box button {
-            border: none;
-        }
-
-        #jobsList {
-            margin-top: 30px;
-            text-align: center;
-            color: var(--muted);
-        }
-
-        .cta {
-            text-align: center;
-            padding: 65px 7%;
-        }
-
-        .cta h2 {
-            color: var(--gold);
-            font-size: 30px;
-            margin-bottom: 12px;
-        }
-
-        .cta p {
-            color: #cccccc;
-            margin-bottom: 25px;
-        }
-
-        footer {
-            background: #080808;
-            border-top: 1px solid #333;
-            padding: 25px 7%;
-            text-align: center;
-            color: #aaa;
-            font-size: 13px;
-        }
-
-        footer span {
-            color: var(--gold);
-        }
-
-        @media (max-width: 600px) {
-            header {
-                justify-content: center;
-            }
-
-            nav {
-                justify-content: center;
-                gap: 14px;
-            }
-
-            .hero {
-                padding: 65px 6%;
-            }
-
-            .section {
-                padding: 50px 6%;
-            }
-        }
-    </style>
 </head>
-
 <body>
 
-    <header>
-        <a href="index.html" class="logo">JobConnect</a>
+<nav class="auth-bar" id="authBar"></nav>
 
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="#jobs">Find Jobs</a>
-            <a href="jobseeker.html">Job Seeker</a>
-            <a href="employer.html">Employer</a>
-            <a href="login.html">Login</a>
-            <a href="register.html">Register</a>
-        </nav>
-    </header>
+<main>
 
-    <main>
-
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Find Opportunities.<br><span>Build Your Future.</span></h1>
-
-                <p>
-                    Welcome to JobConnect — a platform connecting talented
-                    job seekers with employers and exciting career opportunities.
-                </p>
-
-                <div class="buttons">
-                    <a href="#jobs" class="btn">Find Jobs</a>
-                    <a href="employer.html" class="btn btn-outline">Post a Job</a>
-                    <a href="register.html" class="btn btn-outline">Join JobConnect</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="section">
-            <div class="section-title">
-                <h2>Why Choose JobConnect?</h2>
-                <p>Everything you need to take the next step in your career.</p>
-            </div>
-
-            <div class="features">
-                <div class="feature-card">
-                    <h3>Find Opportunities</h3>
-                    <p>Explore job opportunities and discover roles that match your skills.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Build Your Profile</h3>
-                    <p>Create a professional profile to showcase your education and experience.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Connect with Employers</h3>
-                    <p>Give employers an opportunity to discover your skills and talents.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Recruit Talent</h3>
-                    <p>Employers can create job listings and connect with potential applicants.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="section jobs-section" id="jobs">
-            <div class="section-title">
-                <h2>Explore Jobs</h2>
-                <p>Search for opportunities and take the next step in your career.</p>
-            </div>
-
-            <div class="search-box">
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Search by job title or keyword"
-                    aria-label="Search jobs"
-                >
-
-                <select id="jobTypeFilter" aria-label="Filter by employment type">
-                    <option value="">All Employment Types</option>
-                    <option value="Full-time">Full-time</option>
-                    <option value="Part-time">Part-time</option>
-                    <option value="Contract">Contract</option>
-                    <option value="Internship">Internship</option>
-                </select>
-
-                <button type="button" class="btn" onclick="searchJobs()">
-                    Search
-                </button>
-
-                <button type="button" class="btn btn-outline" onclick="clearFilters()">
-                    Clear
-                </button>
-            </div>
-
-            <div id="jobsList">
-                <p>Loading available jobs...</p>
-            </div>
-        </section>
-
-        <section class="cta">
-            <h2>Ready to Get Started?</h2>
-
-            <p>
-                Join JobConnect today and take your next step towards
-                new opportunities.
-            </p>
-
+    <section class="cover">
+        <div class="cover-frame">
+            <img src="logo.svg" class="logo logo-large" alt="JobConnect logo">
+            <h1>JobConnect</h1>
+            <p class="cover-tagline">Find Opportunities. Build Your Future.</p>
+            <p>A platform connecting talented job seekers with employers and exciting career opportunities.</p>
             <div class="buttons">
-                <a href="register.html" class="btn">Create an Account</a>
-                <a href="login.html" class="btn btn-outline">Sign In</a>
+                <button type="button" onclick="document.getElementById('jobs').scrollIntoView({behavior:'smooth'})">Find Jobs</button>
+                <button type="button" class="btn-outline" onclick="goPostJob()">Post a Job</button>
             </div>
-        </section>
+        </div>
+    </section>
 
-    </main>
+    <section class="section">
+        <h2 class="section-title">Why Choose JobConnect?</h2>
+        <p class="section-intro">Everything you need to take the next step in your career.</p>
 
-    <footer>
-        <p>
-            &copy; 2026 <span>JobConnect</span>. All rights reserved.
-        </p>
-        <p>Connecting talent with opportunity.</p>
-    </footer>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Find Opportunities</h3>
+                <p>Explore job opportunities and discover roles that match your skills.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Build Your Profile</h3>
+                <p>Create a professional profile to showcase your education and experience.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Connect with Employers</h3>
+                <p>Give employers an opportunity to discover your skills and talents.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Recruit Talent</h3>
+                <p>Post jobs, set the number of positions, and let the system pick the best-qualified applicants.</p>
+            </div>
+        </div>
+    </section>
 
-    <script type="module" src="script.js"></script>
+    <section class="section" id="jobs">
+        <h2 class="section-title">Explore Jobs</h2>
+        <p class="section-intro">Search for opportunities and take the next step in your career.</p>
 
-    <script>
-        function searchJobs() {
-            if (typeof window.showJobs === "function") {
-                window.showJobs();
-            } else {
-                document.getElementById("jobsList").innerHTML =
-                    "<p>Job search is temporarily unavailable. Please refresh the page.</p>";
-            }
-        }
+        <div class="search-bar">
+            <input type="search" id="jobSearch" placeholder="Search job, company or place" aria-label="Search jobs">
 
-        function clearFilters() {
-            document.getElementById("searchInput").value = "";
-            document.getElementById("jobTypeFilter").value = "";
+            <select id="typeFilter" aria-label="Filter by employment type">
+                <option value="">All types</option>
+                <option>Full-time</option>
+                <option>Part-time</option>
+                <option>Contract</option>
+                <option>Internship</option>
+            </select>
 
-            if (typeof window.showJobs === "function") {
-                window.showJobs();
-            }
-        }
-    </script>
+            <button type="button" class="btn-outline" id="clearFilters">Clear</button>
+        </div>
+
+        <p id="resultsCount" class="results-count">Loading available jobs...</p>
+
+        <div id="jobsList"></div>
+    </section>
+
+    <section class="section cta">
+        <h2 class="section-title">Ready to Get Started?</h2>
+        <p class="section-intro">Join JobConnect today and take your next step towards new opportunities.</p>
+
+        <div class="buttons">
+            <a class="btn" href="register.html">Create an Account</a>
+            <a class="btn btn-outline" href="login.html">Sign In</a>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>&copy; 2026 JobConnect. All rights reserved.</p>
+    <p class="footer-tag">Connecting talent with opportunity.</p>
+</footer>
+
+<script type="module" src="script.js"></script>
 
 </body>
 </html>
