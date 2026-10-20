@@ -1,7 +1,11 @@
 // ======================================================
-// JobConnect server - STAGE 1
+// JobConnect server
 // Serves the website files and one test route (/api/health).
 // Uses only what comes built into Node.js, so nothing to install.
+//
+// The website is made of plain files (HTML, CSS, JS, logo). This server
+// is only needed to test the site on your own phone, or to host it on a
+// service that runs Node.js. GitHub Pages does not need it.
 // ======================================================
 
 const http = require("http");
@@ -11,9 +15,12 @@ const path = require("path");
 // The port the server listens on. Hosting services set PORT for us.
 const PORT = process.env.PORT || 3000;
 
-// The website files (HTML, CSS, JS, logo) live in the "public" folder.
-// Only files inside this folder can ever be sent to a visitor.
-const PUBLIC_DIR = path.join(__dirname, "public");
+// The website files can live in a "public" folder OR directly next to this file.
+const PUBLIC_FOLDER = path.join(__dirname, "public");
+const PUBLIC_DIR = fs.existsSync(PUBLIC_FOLDER) ? PUBLIC_FOLDER : __dirname;
+
+// Files that must never be sent to a visitor (needed when the site sits next to this file)
+const PRIVATE_NAMES = new Set(["server.js", "package.json", "package-lock.json", "node_modules", "readme.md"]);
 
 // Tells the browser what kind of file it is receiving
 const MIME_TYPES = {
@@ -45,7 +52,18 @@ function sendText(res, statusCode, message) {
 }
 
 
-// Find a file in the public folder and send it to the browser
+// Is this address allowed to be served?
+function isPrivate(relativePath) {
+
+    return relativePath
+        .split("/")
+        .some(function (part) {
+            return part.startsWith(".") || PRIVATE_NAMES.has(part.toLowerCase());
+        });
+}
+
+
+// Find a file in the website folder and send it to the browser
 async function serveFile(req, res, urlPath) {
 
     let relativePath;
@@ -63,9 +81,14 @@ async function serveFile(req, res, urlPath) {
 
     const filePath = path.join(PUBLIC_DIR, relativePath);
 
-    // Safety check: stop addresses like /../server.js from escaping the public folder
+    // Safety check: stop addresses like /../server.js from escaping the website folder
     if (!filePath.startsWith(PUBLIC_DIR + path.sep)) {
         return sendText(res, 403, "Forbidden");
+    }
+
+    // Server files and hidden files are never shared
+    if (isPrivate(relativePath)) {
+        return sendText(res, 404, "Page not found");
     }
 
     try {
@@ -74,7 +97,12 @@ async function serveFile(req, res, urlPath) {
 
         const type = MIME_TYPES[path.extname(filePath).toLowerCase()] || "application/octet-stream";
 
-        res.writeHead(200, { "Content-Type": type });
+        res.writeHead(200, {
+            "Content-Type": type,
+            // Always fetch the newest copy, so changes show up right after a refresh
+            "Cache-Control": "no-cache"
+        });
+
         res.end(req.method === "HEAD" ? undefined : data);
 
     } catch (error) {
