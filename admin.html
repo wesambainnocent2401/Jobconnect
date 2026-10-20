@@ -3,48 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JobConnect | Admin Dashboard</title>
+    <title>Admin Dashboard - JobConnect</title>
     <link rel="icon" href="logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
 
     <style>
         .admin-container {
             max-width: 1150px;
-            margin: 35px auto;
+            margin: 25px auto;
             padding: 20px;
         }
 
         .admin-heading {
             margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .admin-heading h2 {
             color: var(--gold);
+            margin-bottom: 6px;
+        }
+
+        .admin-heading p {
+            color: var(--muted);
         }
 
         .admin-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 14px;
             margin-bottom: 30px;
         }
 
         .stat-card {
-            background: var(--surface);
+            background: linear-gradient(180deg, #18171c 0%, #121115 100%);
             border: 1px solid var(--line);
+            border-left: 4px solid var(--gold);
             border-radius: 12px;
-            padding: 24px;
+            padding: 18px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(245, 215, 122, 0.25);
         }
 
         .stat-card h3 {
             color: var(--muted);
-            font-size: 15px;
-   scripholder    .stat-card strong {
+            font-family: 'Poppins', Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .stat-card strong {
             display: block;
             color: var(--gold);
             font-size: 32px;
-            margin-top: 10px;
+            margin-top: 6px;
         }
 
         .admin-section {
-            background: var(--surface);
+            background: linear-gradient(180deg, #18171c 0%, #121115 100%);
             border: 1px solid var(--line);
             border-radius: 12px;
             padding: 22px;
@@ -55,6 +70,10 @@
         .admin-section h2 {
             color: var(--gold);
             margin-bottom: 18px;
+        }
+
+        .admin-section p {
+            margin: 6px 0;
         }
 
         .admin-table {
@@ -80,6 +99,8 @@
 
         .admin-table button {
             margin: 3px;
+            padding: 8px 16px;
+            font-size: 14px;
         }
 
         .admin-search {
@@ -93,14 +114,17 @@
             border-radius: 10px;
             margin-bottom: 20px;
             color: var(--gold-light);
+            text-align: center;
         }
 
         .danger-btn {
             background: #8b2525 !important;
+            border-color: #c25b5b !important;
             color: white !important;
+            text-shadow: none !important;
         }
 
-        @media(max-width: 600px) {
+        @media (max-width: 600px) {
             .admin-container {
                 padding: 12px;
             }
@@ -112,11 +136,12 @@
     </style>
 </head>
 
-<body>
+<body data-requires="admin">
 
 <nav class="auth-bar" id="authBar"></nav>
 
 <header>
+    <a href="index.html" class="brand"><img src="logo.svg" class="logo" alt="JobConnect logo"></a>
     <h1>JobConnect Admin</h1>
     <p>Platform Management Centre</p>
 </header>
@@ -142,7 +167,7 @@
             </div>
 
             <div class="stat-card">
-                <h3>Jobseekers</h3>
+                <h3>Job Seekers</h3>
                 <strong id="totalJobseekers">0</strong>
             </div>
 
@@ -233,22 +258,40 @@
 
             <p id="shortlistedStats"></p>
 
-            <p id="interviewStats"></p>
+            <p id="selectionStats"></p>
 
         </section>
 
-        <button onclick="location.href='index.html'">
-            Return to Homepage
-        </button>
+        <div class="form-actions">
+            <button type="button" onclick="location.href='index.html'">
+                Return to Homepage
+            </button>
+        </div>
 
     </section>
 
 </main>
 
 <footer>
-    <p>© 2026 JobConnect. Administration Centre.</p>
+    <p>&copy; 2026 JobConnect. Administration Centre.</p>
 </footer>
+
 <script type="module" src="script.js"></script>
+
+<script>
+    // If script.js has not started after 8 seconds, show a warning (it disappears if the script starts late)
+    setTimeout(function () {
+        if (window.__jobconnectReady) return;
+
+        var banner = document.createElement("div");
+        banner.id = "jc-banner";
+        banner.textContent = "JobConnect has not started. Check your internet connection and reload. " +
+            "If this stays, script.js may be missing or outdated on the website.";
+        banner.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:9999;padding:14px 16px;" +
+            "background:#7a1f1f;color:#fff;font:14px/1.4 Arial,sans-serif;text-align:center;";
+        document.body.appendChild(banner);
+    }, 8000);
+</script>
 
 </body>
 </html>
