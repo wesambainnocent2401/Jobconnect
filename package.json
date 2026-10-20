@@ -4,7 +4,11 @@
   "description": "JobConnect - connecting employers and job seekers",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node --check server.js"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "license": "ISC"
 }
