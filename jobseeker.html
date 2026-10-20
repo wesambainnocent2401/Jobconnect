@@ -3,34 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Job Seeker Profile - JobConnect</title>
-
+    <title>My Profile - JobConnect</title>
+    <meta name="description" content="JobConnect connects job seekers with employers and career opportunities.">
     <link rel="icon" href="logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
 </head>
-
-<body>
+<body data-requires="jobseeker">
 
 <nav class="auth-bar" id="authBar"></nav>
 
 <header>
-    <img src="logo.svg" class="logo" alt="JobConnect logo">
+    <a href="index.html" class="brand"><img src="logo.svg" class="logo" alt="JobConnect logo"></a>
     <h1>JobConnect</h1>
-    <p>Create Your Job Seeker Profile</p>
+    <p>Your Job Seeker Profile</p>
 </header>
 
 <main>
 
-<section class="profile-form profile-wide">
+    <section class="profile-wide">
+        <p class="profile-intro">Fill in your details once. We will use them every time you apply.</p>
 
-    <p class="profile-intro">
-        Fill in your details once. We will use them every time you apply.
-    </p>
-
-    <form id="profileForm">
-
-        <!-- PERSONAL -->
+        <form id="profileForm">
         <div class="form-section">
             <h2>Personal Information</h2>
 
@@ -39,87 +32,68 @@
                     <label for="profileName">Full Name</label>
                     <input type="text" id="profileName" placeholder="Enter your full name" required>
                 </div>
-
                 <div class="field">
                     <label for="profilePhone">Phone Number</label>
                     <input type="tel" id="profilePhone" placeholder="07XX XXX XXX" required>
                 </div>
-
                 <div class="field">
                     <label for="profileEmail">Email Address</label>
                     <input type="email" id="profileEmail" placeholder="you@example.com" required>
                 </div>
-
                 <div class="field full">
                     <label for="profileLocation">Location</label>
                     <input type="text" id="profileLocation" placeholder="City / County">
                 </div>
             </div>
         </div>
-
-        <!-- EDUCATION -->
         <div class="form-section">
             <h2>Education</h2>
 
             <div class="form-grid">
                 <div class="field">
                     <label for="profileEducation">Highest Qualification</label>
-                    <select id="profileEducation" required>
+                    <select id="profileEducation">
                         <option value="">Select qualification</option>
-                        <option>Primary School</option>
-                        <option>Secondary School</option>
-                        <option>Certificate</option>
-                        <option>Diploma</option>
-                        <option>Degree</option>
-                        <option>Masters</option>
-                        <option>PhD</option>
+                        <option value="Primary School">Primary School</option>
+                        <option value="Secondary School">Secondary School</option>
+                        <option value="Certificate">Certificate</option>
+                        <option value="Diploma">Diploma</option>
+                        <option value="Degree">Degree</option>
+                        <option value="Masters">Masters</option>
+                        <option value="PhD">PhD</option>
                     </select>
                 </div>
-
                 <div class="field">
                     <label for="profileField">Field of Study</label>
                     <input type="text" id="profileField" placeholder="e.g. Electrical Engineering">
                 </div>
             </div>
         </div>
-
-        <!-- SKILLS -->
         <div class="form-section">
             <h2>Skills</h2>
 
             <div class="form-grid">
                 <div class="field full">
                     <label for="profileSkills">Your Skills</label>
-                    <textarea
-                        id="profileSkills"
-                        placeholder="Example: Electrical installation, wiring, maintenance"
-                    ></textarea>
+                    <textarea id="profileSkills" placeholder="Example: Electrical installation, wiring, maintenance"></textarea>
                     <small class="hint">Separate each skill with a comma. Employers are matched to you by these skills.</small>
                 </div>
             </div>
         </div>
-
-        <!-- EXPERIENCE -->
         <div class="form-section">
             <h2>Work Experience</h2>
 
             <div class="form-grid">
                 <div class="field full">
                     <label for="profileExperience">Years of Experience</label>
-                    <input type="number" id="profileExperience" min="0" placeholder="Years">
+                    <input type="number" id="profileExperience" placeholder="Years" min="0">
                 </div>
-
                 <div class="field full">
                     <label for="profileExperienceDetails">Experience Details</label>
-                    <textarea
-                        id="profileExperienceDetails"
-                        placeholder="Describe your previous work experience"
-                    ></textarea>
+                    <textarea id="profileExperienceDetails" placeholder="Describe your previous work experience"></textarea>
                 </div>
             </div>
         </div>
-
-        <!-- PORTFOLIO -->
         <div class="form-section">
             <h2>Portfolio</h2>
 
@@ -131,8 +105,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- REFERENCES -->
         <div class="form-section">
             <h2>Reference</h2>
 
@@ -141,12 +113,10 @@
                     <label for="refName">Referee Name</label>
                     <input type="text" id="refName" placeholder="Full name">
                 </div>
-
                 <div class="field">
                     <label for="refPhone">Referee Phone</label>
                     <input type="tel" id="refPhone" placeholder="Phone number">
                 </div>
-
                 <div class="field">
                     <label for="refRelationship">Relationship</label>
                     <input type="text" id="refRelationship" placeholder="e.g. Former employer">
@@ -158,15 +128,14 @@
             <button type="submit">Save Profile</button>
             <button type="button" class="btn-outline" onclick="location.href='index.html'">Back to Home</button>
         </div>
-
-    </form>
-
-</section>
+        </form>
+    </section>
 
 </main>
 
 <footer>
-    <p>© 2026 JobConnect</p>
+    <p>&copy; 2026 JobConnect. All rights reserved.</p>
+    <p class="footer-tag">Connecting talent with opportunity.</p>
 </footer>
 
 <script type="module" src="script.js"></script>
