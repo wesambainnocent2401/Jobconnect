@@ -140,5 +140,20 @@
 
 <script type="module" src="script.js"></script>
 
+<script>
+    // If script.js has not started after 8 seconds, show a warning (it disappears if the script starts late)
+    setTimeout(function () {
+        if (window.__jobconnectReady) return;
+
+        var banner = document.createElement("div");
+        banner.id = "jc-banner";
+        banner.textContent = "JobConnect has not started. Check your internet connection and reload. " +
+            "If this stays, script.js may be missing or outdated on the website.";
+        banner.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:9999;padding:14px 16px;" +
+            "background:#7a1f1f;color:#fff;font:14px/1.4 Arial,sans-serif;text-align:center;";
+        document.body.appendChild(banner);
+    }, 8000);
+</script>
+
 </body>
 </html>
