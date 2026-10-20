@@ -3,34 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Post a Job - JobConnect</title>
-
+    <meta name="description" content="JobConnect connects job seekers with employers and career opportunities.">
     <link rel="icon" href="logo.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
 </head>
-
-<body>
+<body data-requires="employer">
 
 <nav class="auth-bar" id="authBar"></nav>
 
 <header>
-    <img src="logo.svg" class="logo" alt="JobConnect logo">
+    <a href="index.html" class="brand"><img src="logo.svg" class="logo" alt="JobConnect logo"></a>
     <h1>JobConnect</h1>
     <p>Employer Job Posting</p>
 </header>
 
 <main>
 
-<section class="profile-form profile-wide">
+    <section class="profile-wide">
+        <p class="profile-intro">Tell us about the job. If more people apply than there are positions, the best-qualified applicants are selected automatically.</p>
 
-    <p class="profile-intro">
-        Tell us about the job. Qualified applicants will be matched to it automatically.
-    </p>
-
-    <form id="jobForm">
-
-        <!-- COMPANY -->
+        <form id="jobForm">
         <div class="form-section">
             <h2>Company Information</h2>
 
@@ -39,15 +32,29 @@
                     <label for="companyName">Company Name</label>
                     <input type="text" id="companyName" placeholder="Enter company name" required>
                 </div>
-
                 <div class="field">
                     <label for="companyEmail">Company Email</label>
-                    <input type="email" id="companyEmail" placeholder="company@example.com" required>
+                    <input type="email" id="companyEmail" placeholder="company@example.com">
+                </div>
+                <div class="field">
+                    <label for="companyWebsite">Company Website</label>
+                    <input type="url" id="companyWebsite" placeholder="https://...">
+                </div>
+                <div class="field">
+                    <label for="companyLocation">Company Location</label>
+                    <input type="text" id="companyLocation" placeholder="e.g. Nairobi">
+                </div>
+                <div class="field full">
+                    <label for="companyDescription">About the Company</label>
+                    <textarea id="companyDescription" placeholder="A short description of the company"></textarea>
+                </div>
+                <div class="field full">
+                    <label for="companyLogo">Company Logo Link</label>
+                    <input type="url" id="companyLogo" placeholder="https://...">
+                    <small class="hint">Optional. A link to your logo picture.</small>
                 </div>
             </div>
         </div>
-
-        <!-- JOB -->
         <div class="form-section">
             <h2>Job Information</h2>
 
@@ -56,32 +63,35 @@
                     <label for="jobTitle">Job Title</label>
                     <input type="text" id="jobTitle" placeholder="e.g. Electrical Technician" required>
                 </div>
-
                 <div class="field">
                     <label for="jobLocation">Location</label>
                     <input type="text" id="jobLocation" placeholder="e.g. Nairobi" required>
                 </div>
-
                 <div class="field">
                     <label for="employmentType">Employment Type</label>
-                    <select id="employmentType">
-                        <option>Full Time</option>
-                        <option>Part Time</option>
-                        <option>Contract</option>
-                        <option>Temporary</option>
-                        <option>Internship</option>
+                    <select id="employmentType" required>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Internship">Internship</option>
                     </select>
                 </div>
-
-                <div class="field full">
+                <div class="field">
                     <label for="salary">Salary</label>
                     <input type="text" id="salary" placeholder="e.g. KSh 40,000 - 60,000">
-                    <small class="hint">Optional. Jobs with a stated salary attract more applicants.</small>
+                    <small class="hint">Optional.</small>
+                </div>
+                <div class="field">
+                    <label for="positions">Number of Positions</label>
+                    <input type="number" id="positions" placeholder="e.g. 3" required min="1" value="1">
+                    <small class="hint">How many people you want to hire. Automatic selection starts when more people apply than this number.</small>
+                </div>
+                <div class="field full">
+                    <label for="deadline">Application Deadline</label>
+                    <input type="date" id="deadline">
                 </div>
             </div>
         </div>
-
-        <!-- REQUIREMENTS -->
         <div class="form-section">
             <h2>Candidate Requirements</h2>
 
@@ -89,77 +99,79 @@
                 <div class="field">
                     <label for="education">Minimum Education</label>
                     <select id="education">
-                        <option>Any</option>
-                        <option>Secondary School</option>
-                        <option>Certificate</option>
-                        <option>Diploma</option>
-                        <option>Degree</option>
-                        <option>Masters</option>
-                        <option>PhD</option>
+                        <option value="Any">Any</option>
+                        <option value="Secondary School">Secondary School</option>
+                        <option value="Certificate">Certificate</option>
+                        <option value="Diploma">Diploma</option>
+                        <option value="Degree">Degree</option>
+                        <option value="Masters">Masters</option>
+                        <option value="PhD">PhD</option>
                     </select>
                 </div>
-
                 <div class="field">
                     <label for="experience">Minimum Years of Experience</label>
-                    <input type="number" id="experience" min="0" placeholder="e.g. 2">
+                    <input type="number" id="experience" placeholder="e.g. 2" min="0">
                 </div>
-
                 <div class="field full">
                     <label for="skills">Required Skills</label>
-                    <textarea
-                        id="skills"
-                        placeholder="Example: Electrical installation, wiring, maintenance"
-                    ></textarea>
+                    <textarea id="skills" placeholder="Example: Electrical installation, wiring, maintenance"></textarea>
                     <small class="hint">Separate each skill with a comma. Applicants are scored against these skills.</small>
                 </div>
-
                 <div class="field full">
                     <label for="certifications">Required Certifications</label>
-                    <textarea
-                        id="certifications"
-                        placeholder="List any required certificates"
-                    ></textarea>
+                    <textarea id="certifications" placeholder="List any required certificates"></textarea>
                 </div>
             </div>
         </div>
-
-        <!-- DESCRIPTION -->
         <div class="form-section">
-            <h2>Description and Deadline</h2>
+            <h2>Job Details</h2>
 
             <div class="form-grid">
                 <div class="field full">
                     <label for="description">Job Description</label>
-                    <textarea
-                        id="description"
-                        placeholder="Describe the job and responsibilities..."
-                        required
-                    ></textarea>
+                    <textarea id="description" placeholder="Describe the job..." required></textarea>
                 </div>
-
                 <div class="field full">
-                    <label for="deadline">Application Deadline</label>
-                    <input type="date" id="deadline">
+                    <label for="responsibilities">Responsibilities</label>
+                    <textarea id="responsibilities" placeholder="What will the person do?"></textarea>
+                </div>
+                <div class="field full">
+                    <label for="benefits">Benefits</label>
+                    <textarea id="benefits" placeholder="Allowances, insurance, training..."></textarea>
                 </div>
             </div>
         </div>
 
         <div class="form-actions">
             <button type="submit">Publish Job</button>
-            <button type="button" class="btn-outline" onclick="location.href='index.html'">Back to Home</button>
+            <button type="button" class="btn-outline" onclick="location.href='my-jobs.html'">Cancel</button>
         </div>
-
-    </form>
-
-</section>
+        </form>
+    </section>
 
 </main>
 
 <footer>
-    <p>© 2026 JobConnect</p>
+    <p>&copy; 2026 JobConnect. All rights reserved.</p>
+    <p class="footer-tag">Connecting talent with opportunity.</p>
 </footer>
 
 <script type="module" src="script.js"></script>
+
+<script>
+    // If script.js has not started after 8 seconds, show a warning (it disappears if the script starts late)
+    setTimeout(function () {
+        if (window.__jobconnectReady) return;
+
+        var banner = document.createElement("div");
+        banner.id = "jc-banner";
+        banner.textContent = "JobConnect has not started. Check your internet connection and reload. " +
+            "If this stays, script.js may be missing or outdated on the website.";
+        banner.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:9999;padding:14px 16px;" +
+            "background:#7a1f1f;color:#fff;font:14px/1.4 Arial,sans-serif;text-align:center;";
+        document.body.appendChild(banner);
+    }, 8000);
+</script>
 
 </body>
 </html>
