@@ -53,7 +53,7 @@ document.getElementById("jc-banner")?.remove();
 // ==========================================
 
 const APPWRITE_ENDPOINT = "https://fra.cloud.appwrite.io/v1";
-const APPWRITE_PROJECT_ID = "6ad0cec40008cbc36720";
+const APPWRITE_PROJECT_ID = "6ad0ca2300059f34ac73";
 
 const DATABASE_ID = "Jobconnect";
 
